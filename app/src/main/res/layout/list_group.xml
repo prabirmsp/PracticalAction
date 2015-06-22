@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:orientation="horizontal"
+    android:padding="24dp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/imageView1"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/arrow"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_vertical"
+        app:riv_corner_radius="16dp"
+        app:riv_oval="false"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/lblListHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Title Goes Here"
+            android:textSize="18sp"
+            android:textColor="@color/pink_highlight"
+            android:fontFamily="sans-serif-medium"/>
+
+        <TextView
+            android:id="@+id/groupDescription"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centurief"
+            android:password="false"
+            android:lines="3"
+            android:lineSpacingMultiplier="1.2"/>
+    </LinearLayout>
+</LinearLayout>
