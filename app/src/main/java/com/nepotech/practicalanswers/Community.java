@@ -1,5 +1,6 @@
 package com.nepotech.practicalanswers;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -15,15 +16,13 @@ public class Community {
     private String description;
     private String alias;
     private String imageurl;
-    protected ArrayList<Community> children;
 
-    public Community () {
-        this.children = new ArrayList<>();
+    public Community() {
 
     }
 
-    public Community (String id, String dspace_id, String parent_id, String rgt, String lft,
-                      String level, String title, String description, String alias, String imageurl) {
+    public Community(String id, String dspace_id, String parent_id, String rgt, String lft,
+                     String level, String title, String description, String alias, String imageurl) {
         this.id = id;
         this.dspace_id = dspace_id;
         this.parent_id = parent_id;
@@ -34,15 +33,36 @@ public class Community {
         this.description = description;
         this.alias = alias;
         this.imageurl = imageurl;
-        this.children = new ArrayList<>();
     }
 
-    public void addChild (Community child) {
-        children.add(child);
+    public Community(String jsonStr) throws JSONException {
+        JSONObject jsonObject = new JSONObject(jsonStr);
+        id = jsonObject.getString("id");
+        dspace_id = jsonObject.getString("dspace_id");
+        parent_id = jsonObject.getString("parent_id");
+        rgt = jsonObject.getString("rgt");
+        lft = jsonObject.getString("lft");
+        level = jsonObject.getString("level");
+        title = jsonObject.getString("title");
+        description = jsonObject.getString("description");
+        alias = jsonObject.getString("alias");
+        imageurl = jsonObject.getString("imageurl");
+
     }
 
-    public int getChildrenNumber () {
-        return children.size();
+    public String toJSON () throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("dspace_id", dspace_id);
+        jsonObject.put("parent_id", parent_id);
+        jsonObject.put("rgt", rgt);
+        jsonObject.put("lft", lft);
+        jsonObject.put("level", level);
+        jsonObject.put("title", title);
+        jsonObject.put("description", description);
+        jsonObject.put("alias", alias);
+        jsonObject.put("imageurl", imageurl);
+        return jsonObject.toString();
     }
 
     public String getId() {

@@ -33,11 +33,6 @@
             android:label="Collections"
             android:parentActivityName=".MainActivity">
         </activity>
-        <activity
-            android:name="com.nepotech.practicalanswers.SingleItem"
-            android:label="Items"
-            android:parentActivityName=".SingleCommunity">
-        </activity>
     </application>
 
 </manifest>

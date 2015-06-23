@@ -14,7 +14,7 @@
         android:src="@drawable/arrow"
         android:scaleType="fitXY"
         android:layout_gravity="center_vertical"
-        app:riv_corner_radius="16dp"
+        app:riv_corner_radius="12dp"
         app:riv_oval="false"/>
 
     <LinearLayout
@@ -38,7 +38,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&apos;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centurief"
+            android:text="Description goes here"
             android:password="false"
             android:lines="3"
             android:lineSpacingMultiplier="1.2"/>

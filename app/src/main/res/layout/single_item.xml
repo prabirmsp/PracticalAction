@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="fill_parent">
+
     <ImageView
-        android:id="@+id/icon"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:padding="10dp" />
- 
+        android:id="@+id/doc_thumb"
+        android:layout_width="wrap_content"
+        android:layout_height="96dp"
+        android:src="@drawable/arrow"
+        android:scaleType="fitXY"
+        android:layout_gravity="center_vertical"/>
+
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/item_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/icon"
-        android:paddingBottom="10dp"
-        android:textColor="#008E8F"
-        android:textSize="16dp" />
- 
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        android:layout_toRightOf="@+id/doc_thumb"
+        android:text="Title Goes Here"
+        android:textColor="@color/pink_highlight"
+        android:textSize="16sp" />
+
     <TextView
-        android:id="@+id/desc"
+        android:id="@+id/item_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:layout_toRightOf="@+id/icon"
-        android:paddingLeft="10dp"
-        android:textColor="#3399FF"
-        android:textSize="14dp" />
+        android:layout_below="@+id/item_title"
+        android:layout_toRightOf="@+id/doc_thumb"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="My description is the best!"
+        android:textSize="14sp" />
 </RelativeLayout>

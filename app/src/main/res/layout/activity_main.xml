@@ -1,16 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearLayout"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:background="#f4f4f4" >
+    android:background="#f4f4f4"
+    android:orientation="vertical">
 
-
-    <ExpandableListView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/expandableListView"
-        android:groupIndicator="@color/transparent"/>
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/fillerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nothing to see here!"
+            android:textSize="20sp"
+            android:textColor="#BBBBBB"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:visibility="invisible"/>
 
+        <ExpandableListView
+            android:id="@+id/expandableListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:groupIndicator="@color/transparent" />
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="150dp" />
+    </FrameLayout>
 </LinearLayout>

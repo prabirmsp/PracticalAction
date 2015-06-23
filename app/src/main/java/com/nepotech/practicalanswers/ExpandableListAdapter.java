@@ -13,28 +13,36 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
-
-//set dspace like childs
+import java.util.HashMap;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
-    private ArrayList<Community> mCommunities = null;
+    private ArrayList<Community> mParentCommunities;
+    private HashMap<Community,ArrayList<Community>> mChildrenMap;
 
-    public ExpandableListAdapter(Context context, ArrayList<Community> communities) {
+    private TextView groupDescription;
+
+
+    public ExpandableListAdapter(Context context,
+                                 ArrayList<Community> parentList,
+                                 HashMap<Community, ArrayList<Community>> childMap) {
         mContext = context;
-        mCommunities = communities;
+        mParentCommunities = parentList;
+        mChildrenMap = childMap;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.mCommunities.get(groupPosition).children.get(childPosition);
+        return this.mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition);
     }
 
 
@@ -47,8 +55,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.list_item, null);
         }
 
-        Community child = mCommunities.get(groupPosition).children.get(childPosition);
-        String childTitle =  URLDecoder.decode(child.getTitle());
+        Community child = (Community) getChild(groupPosition, childPosition);
+        String childTitle = URLDecoder.decode(child.getTitle());
         String level_child = child.getLevel();
 
         TextView txtListChild = (TextView) convertView
@@ -56,9 +64,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListChild.setText(childTitle);
 
         ImageView iv_child = (ImageView) convertView.findViewById(R.id.imageView1);
-        int parentLevel = Integer.parseInt(mCommunities.get(groupPosition).getLevel());
+        int parentLevel = Integer.parseInt(mParentCommunities.get(groupPosition).getLevel());
         if ((Integer.parseInt(level_child) - parentLevel) == 2) {
             txtListChild.setPadding(10, 0, 0, 0);
+            txtListChild.setTypeface(null, Typeface.BOLD);
             iv_child.setPadding(20, 0, 0, 0);
         } else {
             txtListChild.setPadding(0, 0, 0, 0);
@@ -74,19 +83,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-//    	Log.i("count",""+this.mListDataChild.get(this.mListDataHeader.get(groupPosition))
-//                .size());
-        return this.mCommunities.get(groupPosition).getChildrenNumber();
+        return this.mChildrenMap.get(mParentCommunities.get(groupPosition)).size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this.mCommunities.get(groupPosition);
+        return this.mParentCommunities.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this.mCommunities.size();
+        return this.mParentCommunities.size();
     }
 
     @Override
@@ -108,16 +115,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = infalInflater.inflate(R.layout.list_group, null);
         }
 
-        Community headerCommunity = mCommunities.get(groupPosition);
+        Community headerCommunity = mParentCommunities.get(groupPosition);
         String headerTitle = URLDecoder.decode(headerCommunity.getTitle());
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        Log.i("header in group view", "" + headerTitle);
+        //Log.i("header in group view", "" + headerTitle);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
         ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
         String imageurl = URLDecoder.decode(headerCommunity.getImageurl());
+        //Log.d("GROUPPICURL", imageurl);
+
+        groupDescription = (TextView) convertView.findViewById(R.id.groupDescription);
+        String descriptionText = URLDecoder.decode(headerCommunity.getDescription());
+        groupDescription.setText(descriptionText);
 
         // Load image
         Picasso.with(this.mContext).load(Global.baseUrl + imageurl).into(iv);
@@ -146,7 +158,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             conn.connect();
 
             InputStream is = conn.getInputStream();
-            //Log.e("lkjkkjkl",":"+ is);
             iv.setImageBitmap(BitmapFactory.decodeStream(is));
 
             return true;
@@ -159,4 +170,5 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         return false;
     }
+
 }

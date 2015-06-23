@@ -1,11 +1,14 @@
 package com.nepotech.practicalanswers;
 
 
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +18,8 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
-import android.widget.Toast;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,20 +27,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ExpandableListAdapter mExpandableListAdapter;
     private ExpandableListView mExpandableListView;
-    private ProgressDialog pDialog;
-
-    // Store communities data
-    ArrayList<Community> mCommunities;
+    private ProgressBar mProgressBar;
+    private TextView mTVNull;
 
     // JSON Node names
-    private static final String TAG_COMMUNITY = "communities"; //my first object name
-
+    private static final String TAG_COMMUNITY = "communities"; // wrapper object name
     private static final String TAG_ID = "id";
     private static final String TAG_TITLE = "title";
     private static final String TAG_PARENT_ID = "parent_id";
@@ -44,11 +44,17 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_LEVEL = "level";
     private static final String TAG_LFT = "lft";
     private static final String TAG_RGT = "rgt";
-    private static final String TAG_DESCRIPTION= "description";
-    private static final String TAG_ALIAS= "alias";
+    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_ALIAS = "alias";
     private static final String TAG_IMAGEURL = "imageurl";
 
-    public CommunityDataSource mDatasource;
+    protected static final String TABLE = "table";
+    protected static final String TITLE = "title";
+
+    // Store Communities Data
+    private CommunityDataSource mDataSource;
+    protected ArrayList<Community> mParentCommunities;
+    protected HashMap<Community, ArrayList<Community>> mChildrenMap;
 
 
     @Override
@@ -56,11 +62,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        mDatasource = new CommunityDataSource(MainActivity.this);
-        mDatasource.open();
-        refreshData();
 
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        mDataSource = new CommunityDataSource(MainActivity.this);
+
+        mTVNull = (TextView) findViewById(R.id.fillerTextView);
+        mTVNull.setVisibility(View.INVISIBLE);
+
+        mProgressBar.setVisibility(View.VISIBLE);
+        if (getMapFromDB() != 0) {
+            refreshData();
+        } else {
+            snackbar("Data Recieved from DB!");
+            mProgressBar.setVisibility(View.INVISIBLE);
+        }
 
         mExpandableListView.setOnGroupClickListener(new OnGroupClickListener() {
 
@@ -70,10 +86,13 @@ public class MainActivity extends AppCompatActivity {
 /*	                Toast.makeText(getApplicationContext(),
                      "Group Clicked " + listDataChild.get(listDataHeader.get(groupPosition)),
 	                Toast.LENGTH_SHORT).show();*/
-                if (mCommunities.get(groupPosition).getChildrenNumber() == 0) {
-                    Intent singlecomm = new Intent(MainActivity.this, SingleCommunity.class);
-         //           singlecomm.putExtra("label", listDataHeader.get(groupPosition));
-                    startActivity(singlecomm);
+                if (mChildrenMap.get(mParentCommunities.get(groupPosition)).size() == 0) {
+                    Intent intent = new Intent(MainActivity.this, SingleCommunity.class);
+                    intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
+                            mParentCommunities.get(groupPosition).getDspace_id());
+                    intent.putExtra(TABLE, CommunityDBHelper.TABLE_COMMUNITY);
+                    intent.putExtra(TITLE, mParentCommunities.get(groupPosition).getTitle());
+                    startActivity(intent);
                 }
                 return false;
             }
@@ -108,34 +127,51 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Intent myIntent = new Intent(MainActivity.this, SingleCommunity.class);
-     //           myIntent.putExtra("label", listDataChild.get(listDataHeader.get(groupPosition)).get(childPosition));
-                startActivity(myIntent);
+                Intent intent = new Intent(MainActivity.this, SingleCommunity.class);
+                intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
+                        mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
+                intent.putExtra(TABLE, CommunityDBHelper.TABLE_CHILD_COMMUNITY);
+                intent.putExtra(TITLE, mParentCommunities.get(groupPosition).getTitle());
+                startActivity(intent);
                 return false;
             }
         });
     }
 
-    /*
-     * Preparing the list data
-     */
+    // Get map from database
+    private int getMapFromDB() {
+        mDataSource.open();
+        mChildrenMap = new HashMap<>();
+        ArrayList<Community> temp = mDataSource.getAllCommunities(
+                CommunityDBHelper.TABLE_COMMUNITY, CommunityDBHelper.COLUMN_TITLE);
+        if (!temp.isEmpty()) { // Data found in DB
+            Log.d("Main.getMapFromDB", "Data Found!!!");
+            mParentCommunities = temp;
+            for (Community community : mParentCommunities) {
+                String whereClause = CommunityDBHelper.COLUMN_PARENT_ID +
+                        " = '" + community.getDspace_id() + "'";
+                ArrayList<Community> arrayList = mDataSource.getSelectedCommunities(
+                        CommunityDBHelper.TABLE_CHILD_COMMUNITY, whereClause,
+                        CommunityDBHelper.COLUMN_TITLE);
+                mChildrenMap.put(community, arrayList);
+            }
+            mDataSource.close();
+            // setting adapter
+            mExpandableListAdapter = new ExpandableListAdapter(MainActivity.this, mParentCommunities, mChildrenMap);
+            // setting list adapter
+            mExpandableListView.setAdapter(mExpandableListAdapter);
+            mTVNull.setVisibility(View.INVISIBLE);
+            return 0;
+        } else { // Data not found in DB
+            mDataSource.close();
+            Log.d("Main.getMapFromDB", "Data not found in DB");
+            return 1;
+        }
+    }
+
+
     private void refreshData() {
-        mCommunities = new ArrayList<>();
-
-        // Showing progress dialog
-        pDialog = new ProgressDialog(MainActivity.this);
-        pDialog.setMessage("Please wait...");
-        pDialog.setCancelable(false);
-        pDialog.show();
-
         new GetCommunities().execute();
-
-        // Dismiss the progress dialog
-        if (pDialog.isShowing())
-            pDialog.dismiss();
-
-
-
     }
 
     @Override
@@ -160,10 +196,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     /****************************************/
-    private class GetCommunities extends AsyncTask {
+    private class GetCommunities extends AsyncTask<Void, Void, Void> {
 
         @Override
-        protected Object doInBackground(Object[] params) {
+        protected void onPreExecute() {
+            // Show progress bar
+            mProgressBar.setVisibility(View.VISIBLE);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
 
             // GET FROM WEB
             // get JSON data
@@ -173,9 +216,14 @@ public class MainActivity extends AppCompatActivity {
             } catch (Exception e) {
                 e.printStackTrace();
                 Log.e("ServiceHandler", "Could not get JSON Data");
+
+                this.cancel(true);
             }
 
             Log.d("JSONSTRING", jsonStr);
+
+            mDataSource.open();
+            mDataSource.upgrade();
 
             try {
                 // JSON Parsing
@@ -190,14 +238,10 @@ public class MainActivity extends AppCompatActivity {
                         min = level;
                 }
 
-                // Create new ArrayList of Communities
-                mCommunities = new ArrayList<>();
-
-                int count = 0;
                 for (int i = 0; i < length; i++) {
                     JSONObject jsonCommunity = communities.getJSONObject(i);
 
-                    String id = jsonCommunity.getString(TAG_ID);
+                    String id = jsonCommunity.getString(TAG_ID); // id from server (not used)
                     String dspace_id = jsonCommunity.getString(TAG_DSPACE_ID);
                     String parent_id = jsonCommunity.getString(TAG_PARENT_ID);
                     String rgt = jsonCommunity.getString(TAG_RGT);
@@ -208,35 +252,59 @@ public class MainActivity extends AppCompatActivity {
                     String alias = jsonCommunity.getString(TAG_ALIAS);
                     String imageurl = jsonCommunity.getString(TAG_IMAGEURL);
 
-                    Community community = new Community(id, dspace_id, parent_id, rgt, lft, level, title,
-                            description, alias, imageurl);
-
                     if (Integer.parseInt(level) == min) { // if parent group
-                        mCommunities.add(community);
-                        count++;
-                    }
-                    else { // if child
-                        mCommunities.get(count - 1).addChild(community);
+                        mDataSource.createCommunity(
+                                CommunityDBHelper.TABLE_COMMUNITY, dspace_id, parent_id, rgt, lft,
+                                level, title, description, alias, imageurl);
+                    } else { // if child
+                        mDataSource.createCommunity(
+                                CommunityDBHelper.TABLE_CHILD_COMMUNITY, dspace_id, parent_id, rgt, lft,
+                                level, title, description, alias, imageurl);
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            mDataSource.close();
 
 
             return null;
         }
 
         @Override
-        protected void onPostExecute(Object o) {
-            // setting adapter
-            mExpandableListAdapter = new ExpandableListAdapter(MainActivity.this, mCommunities);
-
-            // setting list adapter
-            mExpandableListView.setAdapter(mExpandableListAdapter);
-
-            super.onPostExecute(o);
+        protected void onPostExecute(Void aVoid) {
+            snackbar("Successfully updated!");
+            getMapFromDB();
+            // Dismiss the progress bar
+            mProgressBar.setVisibility(View.INVISIBLE);
+            super.onPostExecute(aVoid);
         }
+
+
+        @Override
+        protected void onCancelled() {
+            // Dismiss the progress dialog
+            mProgressBar.setVisibility(View.INVISIBLE);
+            // Alert Dialog
+            new AlertDialog.Builder(MainActivity.this).setTitle("Oh no!")
+                    .setMessage("Looks like we can't connect!")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).show();
+            if (getMapFromDB() == 0)
+                mTVNull.setVisibility(View.INVISIBLE);
+            else
+                mTVNull.setVisibility(View.VISIBLE);
+            super.onCancelled();
+        }
+    }
+
+    private void snackbar(String message) {
+        Snackbar.make(findViewById(R.id.linearLayout), message, Snackbar.LENGTH_LONG)
+                .show();
     }
 }
