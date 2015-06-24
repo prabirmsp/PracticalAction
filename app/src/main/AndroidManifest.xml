@@ -9,29 +9,37 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        >
+        android:theme="@style/AppTheme" >
         <activity
-            android:name="com.nepotech.practicalanswers.Splash"
+            android:name=".Splash"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.nepotech.practicalanswers.MainActivity"
-            android:label="Our Resources"
-            >
+            android:name=".MainActivity"
+            android:label="Our Resources" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.nepotech.practicalanswers.SingleCommunity"
+            android:name=".SingleCommunity"
             android:label="Collections"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity" >
+        </activity>
+        <activity
+            android:name=".SingleItem"
+            android:label="@string/title_activity_single_item"
+            android:parentActivityName=".SingleCommunity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nepotech.practicalanswers.SingleCommunity" />
         </activity>
     </application>
 

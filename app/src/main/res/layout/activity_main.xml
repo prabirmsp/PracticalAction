@@ -24,7 +24,8 @@
             android:id="@+id/expandableListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:groupIndicator="@color/transparent" />
+            android:groupIndicator="@color/transparent"
+            android:drawSelectorOnTop="true"/>
 
         <ProgressBar
             android:id="@+id/progressBar"
