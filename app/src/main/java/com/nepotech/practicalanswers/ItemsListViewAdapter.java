@@ -1,11 +1,11 @@
 package com.nepotech.practicalanswers;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-public class ItemsListViewAdapter extends BaseAdapter {
+public class ItemsListViewAdapter extends RecyclerView.Adapter<ItemsListViewAdapter.ViewHolder> {
 
     Context mContext;
     ArrayList<Item> mItems;
@@ -27,13 +27,28 @@ public class ItemsListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
         return mItems.size();
     }
 
     @Override
-    public Item getItem(int position) {
-        return mItems.get(position);
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View itemView = LayoutInflater.
+                from(viewGroup.getContext()).
+                inflate(R.layout.single_item, viewGroup, false);
+
+        return new ViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        Item rowItem = mItems.get(i);
+
+        // set textviews
+        viewHolder.txtDesc.setText(URLDecoder.decode(rowItem.getDescription()));
+        viewHolder.txtTitle.setText(URLDecoder.decode(rowItem.getTitle()));
+        // set document thumb imageview
+        Picasso.with(mContext).load(rowItem.getDocumentThumbHref()).into(viewHolder.imageView);
     }
 
     @Override
@@ -42,36 +57,18 @@ public class ItemsListViewAdapter extends BaseAdapter {
     }
 
 
-    /*private view holder class*/
-    private class ViewHolder {
+    // ViewHolder Class //
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView txtTitle;
         TextView txtDesc;
-    }
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Item rowItem = getItem(position);
-        ViewHolder holder;
+        public ViewHolder(View v) {
+            super(v);
+            txtDesc = (TextView) v.findViewById(R.id.item_description);
+            txtTitle = (TextView) v.findViewById(R.id.item_title);
+            imageView = (ImageView) v.findViewById(R.id.doc_thumb);
 
-        LayoutInflater mInflater = (LayoutInflater) mContext
-                .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.single_item, null);
-            holder = new ViewHolder();
-            holder.txtDesc = (TextView) convertView.findViewById(R.id.item_description);
-            holder.txtTitle = (TextView) convertView.findViewById(R.id.item_title);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.doc_thumb);
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
         }
-        // set textviews
-        holder.txtDesc.setText(URLDecoder.decode(rowItem.getDescription()));
-        holder.txtTitle.setText(URLDecoder.decode(rowItem.getTitle()));
-        // set document thumb imageview
-        Picasso.with(mContext).load(rowItem.getDocumentThumbHref()).into(holder.imageView);
-
-        return convertView;
     }
 }

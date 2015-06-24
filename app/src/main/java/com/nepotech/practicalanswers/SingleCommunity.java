@@ -2,11 +2,15 @@ package com.nepotech.practicalanswers;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +32,7 @@ public class SingleCommunity extends AppCompatActivity {
     ItemsDataSource mItemsDataSource;
 
     ProgressBar mProgressBar;
-    ListView mListView;
+    RecyclerView mRecyclerView;
     ItemsListViewAdapter mListViewAdapter;
 
     // JSON Nodes
@@ -53,7 +57,9 @@ public class SingleCommunity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_singlecommunity);
-        mListView = (ListView) findViewById(R.id.items_list);
+        mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(llm);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -77,6 +83,15 @@ public class SingleCommunity extends AppCompatActivity {
             mProgressBar.setVisibility(View.INVISIBLE);
         }
 
+        mRecyclerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar("clicked");
+                v.
+            }
+        });
+        mRecyclerView.
+
 
     }
     // Get items list from database
@@ -91,7 +106,7 @@ public class SingleCommunity extends AppCompatActivity {
             // setting adapter
             mListViewAdapter = new ItemsListViewAdapter(SingleCommunity.this, mItems);
             // setting list adapter
-            mListView.setAdapter(mListViewAdapter);
+            mRecyclerView.setAdapter(mListViewAdapter);
             return 0;
         } else { // Data not found in DB
             mItemsDataSource.close();
@@ -213,7 +228,7 @@ public class SingleCommunity extends AppCompatActivity {
     }
 
     void snackbar(String message) {
-        Snackbar.make(findViewById(R.id.linearLayout), message, Snackbar.LENGTH_LONG)
+        Snackbar.make(findViewById(R.id.coLa), message, Snackbar.LENGTH_LONG)
                 .show();
     }
 
