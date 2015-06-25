@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
@@ -32,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ExpandableListAdapter mExpandableListAdapter;
     private ExpandableListView mExpandableListView;
-    private ProgressBar mProgressBar;
     private TextView mTVNull;
+    private SwipeRefreshLayout mSwipeRefresh;
 
     // JSON Node names
     private static final String TAG_COMMUNITY = "communities"; // wrapper object name
@@ -62,20 +65,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        // lint to xml
         mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        mTVNull = (TextView) findViewById(R.id.fillerTextView);
+        mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+
         mDataSource = new CommunityDataSource(MainActivity.this);
 
-        mTVNull = (TextView) findViewById(R.id.fillerTextView);
         mTVNull.setVisibility(View.INVISIBLE);
+        mSwipeRefresh.setColorSchemeResources(R.color.primary);
 
-        mProgressBar.setVisibility(View.VISIBLE);
+        mSwipeRefresh.setRefreshing(true);
         if (getMapFromDB() != 0) {
             refreshData();
         } else {
             snackbar("Data Recieved from DB!");
-            mProgressBar.setVisibility(View.INVISIBLE);
+            mSwipeRefresh.setRefreshing(false);
         }
 
         mExpandableListView.setOnGroupClickListener(new OnGroupClickListener() {
@@ -134,6 +139,14 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra(TITLE, mParentCommunities.get(groupPosition).getTitle());
                 startActivity(intent);
                 return false;
+            }
+        });
+
+        // Swipe refresh listener
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();
             }
         });
     }
@@ -200,8 +213,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            // Show progress bar
-            mProgressBar.setVisibility(View.VISIBLE);
+            // Show loading indicator
+            mSwipeRefresh.setRefreshing(true);
             super.onPreExecute();
         }
 
@@ -276,16 +289,16 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             snackbar("Successfully updated!");
             getMapFromDB();
-            // Dismiss the progress bar
-            mProgressBar.setVisibility(View.INVISIBLE);
+            // Dismiss loading indicator
+            mSwipeRefresh.setRefreshing(false);
             super.onPostExecute(aVoid);
         }
 
 
         @Override
         protected void onCancelled() {
-            // Dismiss the progress dialog
-            mProgressBar.setVisibility(View.INVISIBLE);
+            // Dismiss the loading indicator
+            mSwipeRefresh.setRefreshing(false);
             // Alert Dialog
             new AlertDialog.Builder(MainActivity.this).setTitle("Oh no!")
                     .setMessage("Looks like we can't connect!")

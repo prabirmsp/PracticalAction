@@ -3,6 +3,7 @@ package com.nepotech.practicalanswers;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,6 +130,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         groupDescription = (TextView) convertView.findViewById(R.id.groupDescription);
         String descriptionText = URLDecoder.decode(headerCommunity.getDescription());
+        descriptionText = Html.fromHtml(descriptionText).toString();
         groupDescription.setText(descriptionText);
 
         // Load image

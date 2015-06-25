@@ -2,21 +2,26 @@ package com.nepotech.practicalanswers;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,12 +33,14 @@ import java.util.ArrayList;
 public class SingleCommunity extends AppCompatActivity {
 
     Community mCommunity;
+    String tableForCommunity;
     ArrayList<Item> mItems;
     ItemsDataSource mItemsDataSource;
 
     ProgressBar mProgressBar;
     RecyclerView mRecyclerView;
-    ItemsListViewAdapter mListViewAdapter;
+    ItemsRecyclerViewAdapter mListViewAdapter;
+    CollapsingToolbarLayout collapsingToolbar;
 
     // JSON Nodes
     private static final String TAG_ITEMS = "community_items"; // wrapper object name
@@ -58,21 +65,31 @@ public class SingleCommunity extends AppCompatActivity {
 
         setContentView(R.layout.activity_singlecommunity);
         mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
+        mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
         mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
         mProgressBar.setVisibility(View.VISIBLE);
 
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+
         Intent thisIntent = getIntent();
         String dspace_id = thisIntent.getStringExtra(CommunityDBHelper.COLUMN_DSPACE_ID);
-        String table = thisIntent.getStringExtra(MainActivity.TABLE);
+        tableForCommunity = thisIntent.getStringExtra(MainActivity.TABLE);
         String parentTitle = thisIntent.getStringExtra(MainActivity.TITLE);
-        setTitle(URLDecoder.decode(parentTitle));
+        collapsingToolbar.setTitle(URLDecoder.decode(parentTitle));
 
         CommunityDataSource dataSource = new CommunityDataSource(this);
         dataSource.open();
-        mCommunity = dataSource.getFromDspaceId(table, dspace_id);
+        mCommunity = dataSource.getFromDspaceId(tableForCommunity, dspace_id);
         dataSource.close();
+
+        ImageView headerIV = (ImageView) findViewById(R.id.header);
+        //Picasso.with(this).load(mCommunity.getImageurl()).into(headerIV);
 
         mItemsDataSource = new ItemsDataSource(this);
 
@@ -83,17 +100,8 @@ public class SingleCommunity extends AppCompatActivity {
             mProgressBar.setVisibility(View.INVISIBLE);
         }
 
-        mRecyclerView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar("clicked");
-                v.
-            }
-        });
-        mRecyclerView.
-
-
     }
+
     // Get items list from database
     private int getItemsFromDB() {
         mItemsDataSource.open();
@@ -104,7 +112,7 @@ public class SingleCommunity extends AppCompatActivity {
             mItems = temp;
             mItemsDataSource.close();
             // setting adapter
-            mListViewAdapter = new ItemsListViewAdapter(SingleCommunity.this, mItems);
+            mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunity.this, mItems);
             // setting list adapter
             mRecyclerView.setAdapter(mListViewAdapter);
             return 0;
@@ -134,6 +142,7 @@ public class SingleCommunity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     private class GetItems extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {

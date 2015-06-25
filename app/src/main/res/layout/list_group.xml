@@ -41,6 +41,8 @@
             android:text="Description goes here"
             android:password="false"
             android:lines="3"
+            android:maxLines="3"
+            android:ellipsize="end"
             android:lineSpacingMultiplier="1.2"/>
     </LinearLayout>
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.nepotech.practicalanswers;
 
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -28,8 +29,14 @@ public class SingleItem extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                break;
+            case R.id.home:
+                finish();
+                break;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);

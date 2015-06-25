@@ -23,8 +23,14 @@
     <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/primary</item>
 
-        <!-- Support library compatibility -->
+        <!--Support library compatibility -->
         <item name="background">@color/primary</item>
+    </style>
+
+    <!-- Theme for SingleCommunity Activity -->
+    <style name="SingleCommunityTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
     </style>
 
 

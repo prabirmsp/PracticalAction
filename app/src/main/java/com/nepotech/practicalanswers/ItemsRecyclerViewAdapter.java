@@ -1,8 +1,9 @@
 package com.nepotech.practicalanswers;
 
 import android.content.Context;
-import android.content.res.TypedArray;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +15,13 @@ import com.squareup.picasso.Picasso;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-public class ItemsListViewAdapter extends RecyclerView.Adapter<ItemsListViewAdapter.ViewHolder> {
+public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder> {
 
     Context mContext;
     ArrayList<Item> mItems;
 
 
-    public ItemsListViewAdapter(Context context, ArrayList<Item> items) {
+    public ItemsRecyclerViewAdapter(Context context, ArrayList<Item> items) {
         super();
         this.mItems = items;
         this.mContext = context;
@@ -44,11 +45,21 @@ public class ItemsListViewAdapter extends RecyclerView.Adapter<ItemsListViewAdap
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
         Item rowItem = mItems.get(i);
 
+        viewHolder.v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, SingleItem.class);
+                mContext.startActivity(intent);
+
+
+            }
+        });
         // set textviews
         viewHolder.txtDesc.setText(URLDecoder.decode(rowItem.getDescription()));
         viewHolder.txtTitle.setText(URLDecoder.decode(rowItem.getTitle()));
+        String imageUrl = "" + URLDecoder.decode(rowItem.getDocumentThumbHref());
         // set document thumb imageview
-        Picasso.with(mContext).load(rowItem.getDocumentThumbHref()).into(viewHolder.imageView);
+        Picasso.with(mContext).load(imageUrl).into(viewHolder.imageView);
     }
 
     @Override
@@ -62,9 +73,11 @@ public class ItemsListViewAdapter extends RecyclerView.Adapter<ItemsListViewAdap
         ImageView imageView;
         TextView txtTitle;
         TextView txtDesc;
+        View v;
 
         public ViewHolder(View v) {
             super(v);
+            this.v = v;
             txtDesc = (TextView) v.findViewById(R.id.item_description);
             txtTitle = (TextView) v.findViewById(R.id.item_title);
             imageView = (ImageView) v.findViewById(R.id.doc_thumb);
