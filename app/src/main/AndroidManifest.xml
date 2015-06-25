@@ -42,7 +42,8 @@
         <activity
             android:name=".SingleItem"
             android:label="@string/title_activity_single_item"
-            android:parentActivityName=".SingleCommunity">
+            android:parentActivityName=".SingleCommunity"
+            android:theme="@style/SingleItemTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SingleCommunity" />

@@ -43,12 +43,13 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int i) {
-        Item rowItem = mItems.get(i);
+        final Item rowItem = mItems.get(i);
 
         viewHolder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, SingleItem.class);
+                intent.putExtra(ItemsDBHelper.COLUMN_DSPACE_ID, rowItem.getDspaceId());
                 mContext.startActivity(intent);
 
 

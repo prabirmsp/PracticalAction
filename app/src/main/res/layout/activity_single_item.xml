@@ -1,11 +1,174 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.nepotech.practicalanswers.SingleItem">
 
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Document Title Goes Here"
+        android:textSize="20sp"
+        android:textColor="@color/text_dark"/>
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:background="?attr/selectableItemBackground">
 
-</RelativeLayout>
+        <android.support.v7.widget.CardView
+            android:id="@+id/doc_cardview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/title">
+
+            <ImageView
+                android:id="@+id/doc_thumb"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:src="@drawable/arrow" />
+        </android.support.v7.widget.CardView>
+
+        <TextView
+            android:id="@+id/item_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:text="Description for this Document Goes here" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/item_sub_title_linear_layout">
+
+            <TextView
+                android:id="@+id/title_author"
+                style="@style/item_sub_title"
+                android:text="Author" />
+
+            <TextView
+                android:id="@+id/author"
+                style="@style/item_sub_field"
+                android:text="John Doe" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/item_sub_title_linear_layout">
+
+            <TextView
+                android:id="@+id/title_publisher"
+                style="@style/item_sub_title"
+                android:text="Publisher" />
+
+            <TextView
+                android:id="@+id/publisher"
+                style="@style/item_sub_field"
+                android:text="John Doe" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/item_sub_title_linear_layout">
+
+            <TextView
+                android:id="@+id/title_language"
+                style="@style/item_sub_title"
+                android:text="Language" />
+
+            <TextView
+                android:id="@+id/language"
+                style="@style/item_sub_field"
+                android:text="John Doe" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/item_sub_title_linear_layout">
+
+            <TextView
+                android:id="@+id/title_date"
+                style="@style/item_sub_title"
+                android:text="Year" />
+
+            <TextView
+                android:id="@+id/date"
+                style="@style/item_sub_field"
+                android:text="John Doe" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/item_sub_title_linear_layout">
+
+            <TextView
+                android:id="@+id/title_type"
+                style="@style/item_sub_title"
+                android:text="Type" />
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/ic_picture_as_pdf_black_48dp"/>
+
+            <TextView
+                android:id="@+id/type"
+                style="@style/item_sub_field"
+                android:text="John Doe" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <LinearLayout style="@style/icons_linear_layout"
+            android:id="@+id/star_ll">
+            <ImageView
+                android:id="@+id/image_star"
+                android:src="@drawable/ic_star_border_black_48dp"
+                style="@style/icon_iv" />
+            <TextView
+                android:id="@+id/star"
+                android:text="Star"
+                style="@style/icon_tv" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/icons_linear_layout"
+            android:id="@+id/download_ll">
+            <ImageView
+                android:id="@+id/image_download"
+                android:src="@drawable/ic_file_download_black_48dp"
+                style="@style/icon_iv" />
+            <TextView
+                android:id="@+id/download"
+                android:text="Download"
+                style="@style/icon_tv" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/icons_linear_layout"
+            android:id="@+id/share_ll">
+            <ImageView
+                android:id="@+id/image_share"
+                android:src="@drawable/ic_share_black_48dp"
+                style="@style/icon_iv" />
+            <TextView
+                android:id="@+id/share"
+                android:text="Share"
+                style="@style/icon_tv" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

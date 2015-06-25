@@ -95,4 +95,11 @@ public class ItemsDataSource {
     }
 
 
+    public Item getFromDspaceId(String table, String dspace_id) {
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table + " WHERE " +
+                ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'" +
+                " ORDER BY " + ItemsDBHelper.COLUMN_DSPACE_ID, null);
+        cursor.moveToFirst();
+        return cursorToItem(cursor);
+    }
 }

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,10 +38,10 @@ public class SingleCommunity extends AppCompatActivity {
     ArrayList<Item> mItems;
     ItemsDataSource mItemsDataSource;
 
-    ProgressBar mProgressBar;
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mListViewAdapter;
     CollapsingToolbarLayout collapsingToolbar;
+    SwipeRefreshLayout mSwipeRefresh;
 
     // JSON Nodes
     private static final String TAG_ITEMS = "community_items"; // wrapper object name
@@ -62,31 +63,36 @@ public class SingleCommunity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_singlecommunity);
-        mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
-        mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(llm);
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mProgressBar.setVisibility(View.VISIBLE);
 
+        // get from xml
+        mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        mSwipeRefresh.setEnabled(false);
+        mSwipeRefresh.setColorSchemeResources(R.color.primary);
+
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(llm);
+        mSwipeRefresh.setRefreshing(true);
 
         Intent thisIntent = getIntent();
         String dspace_id = thisIntent.getStringExtra(CommunityDBHelper.COLUMN_DSPACE_ID);
         tableForCommunity = thisIntent.getStringExtra(MainActivity.TABLE);
         String parentTitle = thisIntent.getStringExtra(MainActivity.TITLE);
-        collapsingToolbar.setTitle(URLDecoder.decode(parentTitle));
 
+        // get parent community
         CommunityDataSource dataSource = new CommunityDataSource(this);
         dataSource.open();
         mCommunity = dataSource.getFromDspaceId(tableForCommunity, dspace_id);
         dataSource.close();
+
+        collapsingToolbar.setTitle(URLDecoder.decode(mCommunity.getTitle()));
 
         ImageView headerIV = (ImageView) findViewById(R.id.header);
         //Picasso.with(this).load(mCommunity.getImageurl()).into(headerIV);
@@ -97,9 +103,8 @@ public class SingleCommunity extends AppCompatActivity {
             new GetItems().execute();
         else {
             snackbar("Data Received from DB!");
-            mProgressBar.setVisibility(View.INVISIBLE);
+            mSwipeRefresh.setRefreshing(false);
         }
-
     }
 
     // Get items list from database
@@ -146,8 +151,8 @@ public class SingleCommunity extends AppCompatActivity {
     private class GetItems extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
-            // Show progress bar
-            mProgressBar.setVisibility(View.VISIBLE);
+            // Show loading indicator
+            mSwipeRefresh.setRefreshing(true);
             super.onPreExecute();
         }
 
@@ -213,16 +218,16 @@ public class SingleCommunity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             snackbar("Successfully updated!");
             getItemsFromDB();
-            // Dismiss the progress bar
-            mProgressBar.setVisibility(View.INVISIBLE);
+            // Dismiss loading indicator
+            mSwipeRefresh.setRefreshing(false);
             super.onPostExecute(aVoid);
         }
 
 
         @Override
         protected void onCancelled() {
-            // Dismiss the progress dialog
-            mProgressBar.setVisibility(View.INVISIBLE);
+            // Dismiss loading indicator
+            mSwipeRefresh.setRefreshing(false);
             // Alert Dialog
             new AlertDialog.Builder(SingleCommunity.this).setTitle("Oh no!")
                     .setMessage("Looks like we can't connect!")
