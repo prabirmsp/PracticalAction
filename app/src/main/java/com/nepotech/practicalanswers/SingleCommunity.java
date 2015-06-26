@@ -33,10 +33,11 @@ import java.util.ArrayList;
 
 public class SingleCommunity extends AppCompatActivity {
 
-    Community mCommunity;
+    protected Community mCommunity;
     String tableForCommunity;
     ArrayList<Item> mItems;
     ItemsDataSource mItemsDataSource;
+    String mWindowTitle;
 
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mListViewAdapter;
@@ -79,7 +80,6 @@ public class SingleCommunity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
-        mSwipeRefresh.setRefreshing(true);
 
         Intent thisIntent = getIntent();
         String dspace_id = thisIntent.getStringExtra(CommunityDBHelper.COLUMN_DSPACE_ID);
@@ -92,13 +92,15 @@ public class SingleCommunity extends AppCompatActivity {
         mCommunity = dataSource.getFromDspaceId(tableForCommunity, dspace_id);
         dataSource.close();
 
-        collapsingToolbar.setTitle(URLDecoder.decode(mCommunity.getTitle()));
+        mWindowTitle = URLDecoder.decode(mCommunity.getTitle());
+        collapsingToolbar.setTitle(mWindowTitle);
 
         ImageView headerIV = (ImageView) findViewById(R.id.header);
         //Picasso.with(this).load(mCommunity.getImageurl()).into(headerIV);
 
         mItemsDataSource = new ItemsDataSource(this);
 
+        mSwipeRefresh.setRefreshing(true);
         if (getItemsFromDB() != 0)
             new GetItems().execute();
         else {
@@ -117,7 +119,7 @@ public class SingleCommunity extends AppCompatActivity {
             mItems = temp;
             mItemsDataSource.close();
             // setting adapter
-            mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunity.this, mItems);
+            mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunity.this, mItems, mWindowTitle);
             // setting list adapter
             mRecyclerView.setAdapter(mListViewAdapter);
             return 0;

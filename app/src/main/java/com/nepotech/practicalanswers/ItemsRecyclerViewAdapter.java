@@ -19,12 +19,14 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
 
     Context mContext;
     ArrayList<Item> mItems;
+    String mWindowTitle;
 
 
-    public ItemsRecyclerViewAdapter(Context context, ArrayList<Item> items) {
+    public ItemsRecyclerViewAdapter(Context context, ArrayList<Item> items, String windowTitle) {
         super();
         this.mItems = items;
         this.mContext = context;
+        this.mWindowTitle = windowTitle;
     }
 
     @Override
@@ -50,6 +52,7 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, SingleItem.class);
                 intent.putExtra(ItemsDBHelper.COLUMN_DSPACE_ID, rowItem.getDspaceId());
+                intent.putExtra(ItemsDBHelper.COLUMN_TITLE, mWindowTitle);
                 mContext.startActivity(intent);
 
 

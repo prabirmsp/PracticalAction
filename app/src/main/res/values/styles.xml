@@ -34,7 +34,7 @@
     </style>
 
     <!-- Theme for SingleItem Activity -->
-    <style name="SingleItemTheme" parent="@style/Theme.AppCompat.Light.Dialog">
+    <style name="SingleItemTheme" parent="@style/AppTheme">
 
     </style>
 
@@ -67,6 +67,17 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginRight">16dp</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:drawSelectorOnTop">true</item>
+    </style>
+
+    <style name="icons_linear_layout_land">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:background">?attr/selectableItemBackground</item>
         <item name="android:drawSelectorOnTop">true</item>
     </style>

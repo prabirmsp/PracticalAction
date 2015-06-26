@@ -83,14 +83,14 @@ public class ItemsDataSource {
     }
 
     // DELETE rows by collection (on refresh)
-    public void deleteItemsByCollection (String collection_id) {
+    public void deleteItemsByCollection(String collection_id) {
         mDatabase.delete(ItemsDBHelper.TABLE_ITEMS,
                 ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collection_id + "'", null);
     }
 
     // Upgrade
-    public void upgrade () {
-        dbHelper.onUpgrade(mDatabase, ItemsDBHelper.DB_ITEMS_VERSION, ItemsDBHelper.DB_ITEMS_VERSION +1);
+    public void upgrade() {
+        dbHelper.onUpgrade(mDatabase, ItemsDBHelper.DB_ITEMS_VERSION, ItemsDBHelper.DB_ITEMS_VERSION + 1);
 
     }
 
@@ -101,5 +101,33 @@ public class ItemsDataSource {
                 " ORDER BY " + ItemsDBHelper.COLUMN_DSPACE_ID, null);
         cursor.moveToFirst();
         return cursorToItem(cursor);
+    }
+
+    public boolean isPresent(String table, String dspace_id) {
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table +
+                " WHERE " + ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
+        return (cursor.getCount() > 0);
+    }
+
+    public void addStar(String dspace_id) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
+        mDatabase.insert(ItemsDBHelper.TABLE_STARRED, null, contentValues);
+    }
+
+    public void addDownloaded(String dspace_id) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
+        mDatabase.insert(ItemsDBHelper.TABLE_DOWNLOADED, null, contentValues);
+    }
+
+    public void removeStar(String dspace_id) {
+        mDatabase.delete(ItemsDBHelper.TABLE_STARRED,
+                ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
+    }
+
+    public void removeDowloaded(String dspace_id) {
+        mDatabase.delete(ItemsDBHelper.TABLE_DOWNLOADED,
+                ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
     }
 }

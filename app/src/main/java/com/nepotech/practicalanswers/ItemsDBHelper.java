@@ -12,6 +12,8 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     protected static final int DB_ITEMS_VERSION = 2;
 
     protected final static String TABLE_ITEMS = "dspace_items";
+    protected final static String TABLE_STARRED = "starred_items";
+    protected final static String TABLE_DOWNLOADED = "downloaded_items";
 
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_DSPACE_ID = "dspace_id";
@@ -46,6 +48,15 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
                     COLUMN_DOCUMENT_HREF + " text not null, " +
                     COLUMN_DOCUMENT_SIZE + " text not null)";
 
+    private static final  String CREATE_TABLE_STARRED =
+            "create table " + TABLE_STARRED + "(" +
+                    COLUMN_ID + " integer primary key autoincrement , " +
+                    COLUMN_DSPACE_ID + " text not null)";
+    private static final  String CREATE_TABLE_DOWNLOADED =
+            "create table " + TABLE_DOWNLOADED + "(" +
+                    COLUMN_ID + " integer primary key autoincrement , " +
+                    COLUMN_DSPACE_ID + " text not null)";
+
     public ItemsDBHelper(Context context) {
         super(context, DB_ITEMS, null, DB_ITEMS_VERSION);
     }
@@ -53,11 +64,13 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_COMMUNITY);
+        db.execSQL(CREATE_TABLE_STARRED);
+        db.execSQL(CREATE_TABLE_DOWNLOADED);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEMS);
-        onCreate(db);
+        db.execSQL(CREATE_TABLE_COMMUNITY);
     }
 }
