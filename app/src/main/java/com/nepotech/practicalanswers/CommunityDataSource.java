@@ -80,6 +80,7 @@ public class CommunityDataSource {
             arrayList.add(cursorToCommunity(cursor));
             cursor.moveToNext();
         }
+        cursor.close();
         return arrayList;
     }
 
@@ -93,6 +94,7 @@ public class CommunityDataSource {
             arrayList.add(cursorToCommunity(cursor));
             cursor.moveToNext();
         }
+        cursor.close();
         return arrayList;
     }
 

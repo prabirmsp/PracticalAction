@@ -2,10 +2,8 @@ package com.nepotech.practicalanswers;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,12 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,8 +76,8 @@ public class SingleCommunity extends AppCompatActivity {
 
         Intent thisIntent = getIntent();
         String dspace_id = thisIntent.getStringExtra(CommunityDBHelper.COLUMN_DSPACE_ID);
-        tableForCommunity = thisIntent.getStringExtra(MainActivity.TABLE);
-        String parentTitle = thisIntent.getStringExtra(MainActivity.TITLE);
+        tableForCommunity = thisIntent.getStringExtra(OurResourcesActivity.TABLE);
+        String parentTitle = thisIntent.getStringExtra(OurResourcesActivity.TITLE);
 
         // get parent community
         CommunityDataSource dataSource = new CommunityDataSource(this);

@@ -21,8 +21,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:label="Our Resources"
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,14 +31,23 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".OurResourcesActivity"
+            android:label="Our Resources"
+            android:launchMode="singleTop"
+            android:parentActivityName=".HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomeActivity" />
+        </activity>
+        <activity
             android:name=".SingleCommunity"
             android:label="Collections"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".OurResourcesActivity"
             android:theme="@style/SingleCommunityTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".OurResourcesActivity" />
         </activity>
         <activity
             android:name=".SingleItem"
@@ -50,8 +59,12 @@
                 android:value=".SingleCommunity" />
         </activity>
         <activity
-            android:name=".HomeActivity"
-            android:label="@string/title_activity_home" >
+            android:name=".Starred"
+            android:label="@string/title_activity_starred"
+            android:parentActivityName=".HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nepotech.practicalanswers.HomeActivity" />
         </activity>
     </application>
 

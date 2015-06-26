@@ -95,8 +95,8 @@ public class ItemsDataSource {
     }
 
 
-    public Item getFromDspaceId(String table, String dspace_id) {
-        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table + " WHERE " +
+    public Item getFromDspaceId(String dspace_id) {
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS + " WHERE " +
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'" +
                 " ORDER BY " + ItemsDBHelper.COLUMN_DSPACE_ID, null);
         cursor.moveToFirst();
@@ -106,7 +106,9 @@ public class ItemsDataSource {
     public boolean isPresent(String table, String dspace_id) {
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table +
                 " WHERE " + ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
-        return (cursor.getCount() > 0);
+        boolean present = cursor.getCount() > 0;
+        cursor.close();
+        return present;
     }
 
     /** Starring operations **/
@@ -119,6 +121,20 @@ public class ItemsDataSource {
     public void removeStar(String dspace_id) {
         mDatabase.delete(ItemsDBHelper.TABLE_STARRED,
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
+    }
+
+    public ArrayList<Item> getAllStarred () {
+        ArrayList<Item> arrayList = new ArrayList<>();
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_STARRED +
+                " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String dspace_id = cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DSPACE_ID));
+            arrayList.add(getFromDspaceId(dspace_id));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return arrayList;
     }
 
     /** Downloaded operations **/
@@ -134,11 +150,27 @@ public class ItemsDataSource {
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
     }
 
+    public ArrayList<Item> getAllDownloaded () {
+        ArrayList<Item> arrayList = new ArrayList<>();
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_DOWNLOADED +
+                " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String dspace_id = cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DSPACE_ID));
+            arrayList.add(getFromDspaceId(dspace_id));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return arrayList;
+    }
+
     public String getFileName(String dspace_id) {
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_DOWNLOADED +
                 " WHERE " + ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
         cursor.moveToFirst();
-        return cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_FILENAME));
+        String fileName = cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_FILENAME));
+        cursor.close();
+        return fileName;
 
     }
 

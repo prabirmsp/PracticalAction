@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.Window;
 
 
-public class Splash extends AppCompatActivity {
+public class Splash extends Activity {
 
 
     @Override

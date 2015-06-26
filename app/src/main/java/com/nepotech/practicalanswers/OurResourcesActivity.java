@@ -27,7 +27,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
+public class OurResourcesActivity extends AppCompatActivity {
 
     protected static final String TABLE = "table";
     protected static final String TITLE = "title";
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         mTVNull = (TextView) findViewById(R.id.fillerTextView);
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-        mDataSource = new CommunityDataSource(MainActivity.this);
+        mDataSource = new CommunityDataSource(OurResourcesActivity.this);
 
         mTVNull.setVisibility(View.INVISIBLE);
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                      "Group Clicked " + listDataChild.get(listDataHeader.get(groupPosition)),
 	                Toast.LENGTH_SHORT).show();*/
                 if (mChildrenMap.get(mParentCommunities.get(groupPosition)).size() == 0) {
-                    Intent intent = new Intent(MainActivity.this, SingleCommunity.class);
+                    Intent intent = new Intent(OurResourcesActivity.this, SingleCommunity.class);
                     intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
                             mParentCommunities.get(groupPosition).getDspace_id());
                     intent.putExtra(TABLE, CommunityDBHelper.TABLE_COMMUNITY);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Intent intent = new Intent(MainActivity.this, SingleCommunity.class);
+                Intent intent = new Intent(OurResourcesActivity.this, SingleCommunity.class);
                 intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
                         mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
                 intent.putExtra(TABLE, CommunityDBHelper.TABLE_CHILD_COMMUNITY);
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             }
             mDataSource.close();
             // setting adapter
-            mExpandableListAdapter = new ExpandableListAdapter(MainActivity.this, mParentCommunities, mChildrenMap);
+            mExpandableListAdapter = new ExpandableListAdapter(OurResourcesActivity.this, mParentCommunities, mChildrenMap);
             // setting list adapter
             mExpandableListView.setAdapter(mExpandableListAdapter);
             mTVNull.setVisibility(View.INVISIBLE);
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
             // Dismiss the loading indicator
             mSwipeRefresh.setRefreshing(false);
             // Alert Dialog
-            new AlertDialog.Builder(MainActivity.this).setTitle("Oh no!")
+            new AlertDialog.Builder(OurResourcesActivity.this).setTitle("Oh no!")
                     .setMessage("Looks like we can't connect!")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override

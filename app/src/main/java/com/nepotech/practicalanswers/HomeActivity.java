@@ -1,5 +1,6 @@
 package com.nepotech.practicalanswers;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -37,9 +38,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void resources(View view) {
+        Intent intent = new Intent(this, OurResourcesActivity.class);
+        startActivity(intent);
     }
 
     public void starred(View view) {
+        Intent intent = new Intent(this, Starred.class);
+        startActivity(intent);
     }
 
     public void downloaded(View view) {

@@ -6,5 +6,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_single_item">SingleItem</string>
     <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_starred">Starred</string>
 
 </resources>

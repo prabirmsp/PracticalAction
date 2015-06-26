@@ -56,7 +56,7 @@ public class SingleItem extends AppCompatActivity {
         // get item
         ItemsDataSource dataSource = new ItemsDataSource(this);
         dataSource.open();
-        mItem = dataSource.getFromDspaceId(ItemsDBHelper.TABLE_ITEMS, dspace_id);
+        mItem = dataSource.getFromDspaceId(dspace_id);
         dataSource.close();
 
         setTitle(title);
