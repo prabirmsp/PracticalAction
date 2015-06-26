@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nepotech.practicalanswers">
+    package="com.nepotech.practicalanswers" >
 
-    <!--  permissions -->
+    <!-- permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -10,10 +10,10 @@
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <activity
             android:name=".Splash"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,7 +23,7 @@
         <activity
             android:name=".MainActivity"
             android:label="Our Resources"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,9 +33,9 @@
         <activity
             android:name=".SingleCommunity"
             android:label="Collections"
-            android:parentActivityName=".MainActivity"
             android:launchMode="singleTop"
-            android:theme="@style/SingleCommunityTheme">
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/SingleCommunityTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -44,10 +44,14 @@
             android:name=".SingleItem"
             android:label="@string/title_activity_single_item"
             android:parentActivityName=".SingleCommunity"
-            android:theme="@style/SingleItemTheme">
+            android:theme="@style/SingleItemTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".SingleCommunity" />
+        </activity>
+        <activity
+            android:name=".HomeActivity"
+            android:label="@string/title_activity_home" >
         </activity>
     </application>
 
