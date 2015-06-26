@@ -41,9 +41,8 @@ public class SingleItem extends AppCompatActivity {
     private TextView mDescription;
     private ImageView mThumb;
     private ImageView mTypeIcon;
-    private ProgressDialog pDialog;
-    TextView mDownloadTV;
-    ImageView mDownloadIV;
+    private TextView mDownloadTV;
+    private ImageView mDownloadIV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,13 +98,6 @@ public class SingleItem extends AppCompatActivity {
             mTypeIcon.setImageResource(R.drawable.ic_insert_drive_file_black_48dp);
         }
 
-        // Set up dialog for download
-        pDialog = new ProgressDialog(this);
-        pDialog.setMessage("Downloading file. Please wait...");
-        pDialog.setIndeterminate(false);
-        pDialog.setMax(100);
-        pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pDialog.setCancelable(false);
 
         mDataSource = new ItemsDataSource(this);
         mDataSource.open();
@@ -144,7 +136,7 @@ public class SingleItem extends AppCompatActivity {
         download_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mDataSource.isPresent(ItemsDBHelper.TABLE_STARRED, dspace_id)) {
+                if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id)) {
                     openFile(mDataSource.getFileName(dspace_id));
                 } else
                     new DownloadFileFromURL().execute(URLDecoder.decode(mItem.getDocumentHref()));
@@ -180,11 +172,12 @@ public class SingleItem extends AppCompatActivity {
     class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
         String fileName;
+        int lengthOfFile;
+        ProgressDialog pDialog;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             // Create Directory if not exist
             File dir = new File(Environment.getExternalStorageDirectory().toString()
                     + File.separator + Global.ExtFolderName);
@@ -194,6 +187,15 @@ public class SingleItem extends AppCompatActivity {
                 } else
                     cancel(true);
             }
+
+            // Set up dialog for download
+            pDialog = new ProgressDialog(SingleItem.this);
+            pDialog.setTitle("Downloading File");
+            pDialog.setMessage("Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pDialog.setCancelable(false);
+            pDialog.setProgressNumberFormat("%1d/%2d KB");
             // set cancel download button
             pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
                     new DialogInterface.OnClickListener() {
@@ -213,12 +215,14 @@ public class SingleItem extends AppCompatActivity {
         protected String doInBackground(String... f_url) {
             int count;
             try {
+
                 URL url = new URL(f_url[0]);
                 URLConnection connection = url.openConnection();
                 connection.connect();
 
                 // progress bar
-                int lengthOfFile = connection.getContentLength();
+                lengthOfFile = connection.getContentLength();
+                pDialog.setMax(lengthOfFile / 1024);
 
                 // download the file
                 InputStream input = new BufferedInputStream(url.openStream(),
@@ -238,7 +242,7 @@ public class SingleItem extends AppCompatActivity {
                     total += count;
                     // publishing the progress....
                     // After this onProgressUpdate will be called
-                    publishProgress("" + (int) ((total * 100) / lengthOfFile));
+                    publishProgress("" + (int) total / 1024);
 
                     // writing data to file
                     output.write(data, 0, count);
@@ -293,7 +297,6 @@ public class SingleItem extends AppCompatActivity {
         @Override
         protected void onCancelled() {
             super.onCancelled();
-
             snackbar("Download Cancelled");
         }
     }
