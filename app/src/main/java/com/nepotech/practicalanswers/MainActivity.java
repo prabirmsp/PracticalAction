@@ -10,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -30,11 +29,8 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ExpandableListAdapter mExpandableListAdapter;
-    private ExpandableListView mExpandableListView;
-    private TextView mTVNull;
-    private SwipeRefreshLayout mSwipeRefresh;
-
+    protected static final String TABLE = "table";
+    protected static final String TITLE = "title";
     // JSON Node names
     private static final String TAG_COMMUNITY = "communities"; // wrapper object name
     private static final String TAG_ID = "id";
@@ -47,15 +43,14 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_ALIAS = "alias";
     private static final String TAG_IMAGEURL = "imageurl";
-
-    protected static final String TABLE = "table";
-    protected static final String TITLE = "title";
-
-    // Store Communities Data
-    private CommunityDataSource mDataSource;
     protected ArrayList<Community> mParentCommunities;
     protected HashMap<Community, ArrayList<Community>> mChildrenMap;
-
+    private ExpandableListAdapter mExpandableListAdapter;
+    private ExpandableListView mExpandableListView;
+    private TextView mTVNull;
+    private SwipeRefreshLayout mSwipeRefresh;
+    // Store Communities Data
+    private CommunityDataSource mDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +199,10 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void snackbar(String message) {
+        Snackbar.make(findViewById(R.id.linearLayout), message, Snackbar.LENGTH_LONG)
+                .show();
+    }
 
     /****************************************/
     private class GetCommunities extends AsyncTask<Void, Void, Void> {
@@ -311,10 +310,5 @@ public class MainActivity extends AppCompatActivity {
                 mTVNull.setVisibility(View.VISIBLE);
             super.onCancelled();
         }
-    }
-
-    private void snackbar(String message) {
-        Snackbar.make(findViewById(R.id.linearLayout), message, Snackbar.LENGTH_LONG)
-                .show();
     }
 }
