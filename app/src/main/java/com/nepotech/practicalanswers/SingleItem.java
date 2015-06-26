@@ -1,5 +1,6 @@
 package com.nepotech.practicalanswers;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,7 +12,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -42,6 +42,8 @@ public class SingleItem extends AppCompatActivity {
     private ImageView mThumb;
     private ImageView mTypeIcon;
     private ProgressDialog pDialog;
+    TextView mDownloadTV;
+    ImageView mDownloadIV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +74,8 @@ public class SingleItem extends AppCompatActivity {
 
         LinearLayout share_ll = (LinearLayout) findViewById(R.id.share_ll);
 
-        TextView download_tv = (TextView) findViewById(R.id.download);
-        ImageView download_iv = (ImageView) findViewById(R.id.image_download);
+        mDownloadTV = (TextView) findViewById(R.id.download);
+        mDownloadIV = (ImageView) findViewById(R.id.image_download);
         LinearLayout download_ll = (LinearLayout) findViewById(R.id.download_ll);
 
         final TextView star_tv = (TextView) findViewById(R.id.star);
@@ -85,7 +87,9 @@ public class SingleItem extends AppCompatActivity {
         mPublisher.setText(URLDecoder.decode(mItem.getPublisher()));
         mLanguage.setText(mItem.getLanguage());
         mYear.setText(mItem.getDateIssued());
-        mType.setText(mItem.getType());
+        double size = (double) Math.round(
+                (double) Integer.parseInt(mItem.getDocumentSize()) / 102.4) / 10.0;
+        mType.setText(mItem.getType() + " (" + size + " KB)");
         mDescription.setText(URLDecoder.decode(mItem.getDescription()));
 
         Picasso.with(this).load(URLDecoder.decode(mItem.getDocumentThumbHref())).into(mThumb);
@@ -115,11 +119,11 @@ public class SingleItem extends AppCompatActivity {
         }
 
         if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id)) {
-            download_tv.setText("Downloaded");
-            download_iv.setImageResource(R.drawable.ic_offline_pin_black_48dp);
+            mDownloadTV.setText("Downloaded");
+            mDownloadIV.setImageResource(R.drawable.ic_offline_pin_black_48dp);
         } else {
-            download_tv.setText("Download");
-            download_iv.setImageResource(R.drawable.ic_file_download_black_48dp);
+            mDownloadTV.setText("Download");
+            mDownloadIV.setImageResource(R.drawable.ic_file_download_black_48dp);
         }
 
         star_ll.setOnClickListener(new View.OnClickListener() {
@@ -140,10 +144,26 @@ public class SingleItem extends AppCompatActivity {
         download_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DownloadFileFromURL().execute(URLDecoder.decode(mItem.getDocumentHref()));
+                if (mDataSource.isPresent(ItemsDBHelper.TABLE_STARRED, dspace_id)) {
+                    openFile(mDataSource.getFileName(dspace_id));
+                } else
+                    new DownloadFileFromURL().execute(URLDecoder.decode(mItem.getDocumentHref()));
+
             }
         });
 
+        share_ll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Practical Action");
+                intent.putExtra(Intent.EXTRA_TEXT, URLDecoder.decode(mItem.getTitle()) +
+                        "\nFind out more at: " +
+                        URLDecoder.decode(mItem.getDocumentHref()));
+                startActivity(Intent.createChooser(intent, "Share via"));
+            }
+        });
 
     }
 
@@ -160,7 +180,6 @@ public class SingleItem extends AppCompatActivity {
     class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
         String fileName;
-        String dirPath;
 
         @Override
         protected void onPreExecute() {
@@ -168,7 +187,7 @@ public class SingleItem extends AppCompatActivity {
 
             // Create Directory if not exist
             File dir = new File(Environment.getExternalStorageDirectory().toString()
-                    + File.separator + Global.SDFolderName);
+                    + File.separator + Global.ExtFolderName);
             if (!dir.exists()) {
                 if (dir.mkdir()) {
                     Log.i("FileDownloader", "SD Directory Created");
@@ -207,11 +226,9 @@ public class SingleItem extends AppCompatActivity {
 
 
                 fileName = f_url[0].substring(f_url[0].lastIndexOf("/") + 1);
-                dirPath = Environment
-                        .getExternalStorageDirectory().toString() + File.separator +
-                        Global.SDFolderName + File.separator;
+
                 // Output stream
-                OutputStream output = new FileOutputStream(dirPath + fileName);
+                OutputStream output = new FileOutputStream(Global.ExtFolderPath + fileName);
 
                 byte data[] = new byte[1024];
 
@@ -259,31 +276,40 @@ public class SingleItem extends AppCompatActivity {
                     .setAction("OPEN", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            File file = new File(dirPath + fileName);
-
-                            // Just example, you should parse file name for extension
-                            String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
-                                    fileName.substring(fileName.lastIndexOf(".")));
-
-                            Intent intent = new Intent();
-                            intent.setAction(android.content.Intent.ACTION_VIEW);
-                            intent.setDataAndType(Uri.fromFile(file), mime);
-                            startActivityForResult(intent, 10);
-
+                            openFile(fileName);
                         }
                     })
                     .show();
+            mDownloadTV.setText("Downloaded");
+            mDownloadIV.setImageResource(R.drawable.ic_offline_pin_black_48dp);
+
 
             // Add to downloaded list
             mDataSource.addDownloaded(mItem.getDspaceId(), fileName);
 
         }
 
+
         @Override
         protected void onCancelled() {
             super.onCancelled();
 
             snackbar("Download Cancelled");
+        }
+    }
+
+    private void openFile(String fileName) {
+        File file = new File(Global.ExtFolderPath + fileName);
+        if (file.exists()) {
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), mItem.getType());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(intent);
+        } else {
+            new AlertDialog.Builder(this).setTitle("The file does not exist!")
+                    .setMessage("Please delete it and download it again.")
+                    .setPositiveButton("OK", null).show();
         }
     }
 

@@ -109,17 +109,11 @@ public class ItemsDataSource {
         return (cursor.getCount() > 0);
     }
 
+    /** Starring operations **/
     public void addStar(String dspace_id) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
         mDatabase.insert(ItemsDBHelper.TABLE_STARRED, null, contentValues);
-    }
-
-    public void addDownloaded(String dspace_id, String fileName) {
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
-        contentValues.put(ItemsDBHelper.COLUMN_FILENAME, fileName);
-        mDatabase.insert(ItemsDBHelper.TABLE_DOWNLOADED, null, contentValues);
     }
 
     public void removeStar(String dspace_id) {
@@ -127,8 +121,26 @@ public class ItemsDataSource {
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
     }
 
+    /** Downloaded operations **/
+    public void addDownloaded(String dspace_id, String fileName) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
+        contentValues.put(ItemsDBHelper.COLUMN_FILENAME, fileName);
+        mDatabase.insert(ItemsDBHelper.TABLE_DOWNLOADED, null, contentValues);
+    }
+
     public void removeDowloaded(String dspace_id) {
         mDatabase.delete(ItemsDBHelper.TABLE_DOWNLOADED,
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
     }
+
+    public String getFileName(String dspace_id) {
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_DOWNLOADED +
+                " WHERE " + ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
+        cursor.moveToFirst();
+        return cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_FILENAME));
+
+    }
+
+
 }
