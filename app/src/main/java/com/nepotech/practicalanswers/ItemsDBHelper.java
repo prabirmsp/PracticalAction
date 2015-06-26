@@ -29,6 +29,8 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DOCUMENT_THUMB_HREF = "document_thumb_href";
     public static final String COLUMN_DOCUMENT_HREF = "document_href";
     public static final String COLUMN_DOCUMENT_SIZE = "document_size";
+    public static final String COLUMN_FILENAME = "local_file_name";
+    public static final String COLUMN_TIMESTAMP = "timestamp";
 
     // Table create SQL Statement
     private static final String CREATE_TABLE_COMMUNITY =
@@ -48,14 +50,15 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
                     COLUMN_DOCUMENT_HREF + " text not null, " +
                     COLUMN_DOCUMENT_SIZE + " text not null)";
 
-    private static final  String CREATE_TABLE_STARRED =
+    private static final String CREATE_TABLE_STARRED =
             "create table " + TABLE_STARRED + "(" +
                     COLUMN_ID + " integer primary key autoincrement , " +
                     COLUMN_DSPACE_ID + " text not null)";
-    private static final  String CREATE_TABLE_DOWNLOADED =
+    private static final String CREATE_TABLE_DOWNLOADED =
             "create table " + TABLE_DOWNLOADED + "(" +
                     COLUMN_ID + " integer primary key autoincrement , " +
-                    COLUMN_DSPACE_ID + " text not null)";
+                    COLUMN_DSPACE_ID + " text not null, " +
+                    COLUMN_FILENAME + " text not null)";
 
     public ItemsDBHelper(Context context) {
         super(context, DB_ITEMS, null, DB_ITEMS_VERSION);

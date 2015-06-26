@@ -3,6 +3,7 @@ package com.nepotech.practicalanswers;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
@@ -10,10 +11,10 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -100,7 +101,7 @@ public class SingleItem extends AppCompatActivity {
         pDialog.setIndeterminate(false);
         pDialog.setMax(100);
         pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pDialog.setCancelable(true);
+        pDialog.setCancelable(false);
 
         mDataSource = new ItemsDataSource(this);
         mDataSource.open();
@@ -158,9 +159,13 @@ public class SingleItem extends AppCompatActivity {
      */
     class DownloadFileFromURL extends AsyncTask<String, String, String> {
 
+        String fileName;
+        String dirPath;
+
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             // Create Directory if not exist
             File dir = new File(Environment.getExternalStorageDirectory().toString()
                     + File.separator + Global.SDFolderName);
@@ -170,12 +175,15 @@ public class SingleItem extends AppCompatActivity {
                 } else
                     cancel(true);
             }
-            pDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    cancel(true);
-                }
-            });
+            // set cancel download button
+            pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            cancel(true);
+
+                        }
+                    });
             pDialog.show();
         }
 
@@ -198,12 +206,12 @@ public class SingleItem extends AppCompatActivity {
                         8192);
 
 
-                String fileName = f_url[0].substring(f_url[0].lastIndexOf("/") + 1);
-
-                // Output stream
-                OutputStream output = new FileOutputStream(Environment
+                fileName = f_url[0].substring(f_url[0].lastIndexOf("/") + 1);
+                dirPath = Environment
                         .getExternalStorageDirectory().toString() + File.separator +
-                        Global.SDFolderName + File.separator + fileName);
+                        Global.SDFolderName + File.separator;
+                // Output stream
+                OutputStream output = new FileOutputStream(dirPath + fileName);
 
                 byte data[] = new byte[1024];
 
@@ -251,10 +259,23 @@ public class SingleItem extends AppCompatActivity {
                     .setAction("OPEN", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            
+                            File file = new File(dirPath + fileName);
+
+                            // Just example, you should parse file name for extension
+                            String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                                    fileName.substring(fileName.lastIndexOf(".")));
+
+                            Intent intent = new Intent();
+                            intent.setAction(android.content.Intent.ACTION_VIEW);
+                            intent.setDataAndType(Uri.fromFile(file), mime);
+                            startActivityForResult(intent, 10);
+
                         }
                     })
                     .show();
+
+            // Add to downloaded list
+            mDataSource.addDownloaded(mItem.getDspaceId(), fileName);
 
         }
 
@@ -262,9 +283,13 @@ public class SingleItem extends AppCompatActivity {
         protected void onCancelled() {
             super.onCancelled();
 
-            Toast.makeText(SingleItem.this, "Download Cancelled", Toast.LENGTH_LONG).show();
+            snackbar("Download Cancelled");
         }
     }
 
+    private void snackbar(String message) {
+        Snackbar.make(findViewById(R.id.relative_layout), message, Snackbar.LENGTH_LONG)
+                .show();
+    }
 }
 

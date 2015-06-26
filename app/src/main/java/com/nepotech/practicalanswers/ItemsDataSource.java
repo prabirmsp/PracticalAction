@@ -115,9 +115,10 @@ public class ItemsDataSource {
         mDatabase.insert(ItemsDBHelper.TABLE_STARRED, null, contentValues);
     }
 
-    public void addDownloaded(String dspace_id) {
+    public void addDownloaded(String dspace_id, String fileName) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
+        contentValues.put(ItemsDBHelper.COLUMN_FILENAME, fileName);
         mDatabase.insert(ItemsDBHelper.TABLE_DOWNLOADED, null, contentValues);
     }
 
