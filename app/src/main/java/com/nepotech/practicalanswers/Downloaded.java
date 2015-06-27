@@ -1,7 +1,7 @@
 package com.nepotech.practicalanswers;
 
-import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -9,13 +9,12 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
-public class Starred extends AppCompatActivity {
+public class Downloaded extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     ItemsDataSource mDataSource;
-    ArrayList<Item> mStarredItems;
+    ArrayList<Item> mDownloadedItems;
     ItemsRecyclerViewAdapter mRecyclerViewAdapter;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,12 +29,13 @@ public class Starred extends AppCompatActivity {
         mDataSource = new ItemsDataSource(this);
         mDataSource.open();
 
-        mStarredItems = mDataSource.getAllStarred();
+        mDownloadedItems = mDataSource.getAllDownloaded();
 
-        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mStarredItems, "Starred");
+        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mDownloadedItems, "Downloaded");
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mDataSource.close();
+
     }
 
     @Override
@@ -44,8 +44,8 @@ public class Starred extends AppCompatActivity {
 
         mDataSource.open();
 
-        mStarredItems = mDataSource.getAllStarred();
-        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mStarredItems, "Starred");
+        mDownloadedItems = mDataSource.getAllStarred();
+        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mDownloadedItems, "Starred");
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mDataSource.close();
@@ -54,7 +54,7 @@ public class Starred extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_starred, menu);
+        getMenuInflater().inflate(R.menu.menu_downloaded, menu);
         return true;
     }
 
@@ -71,7 +71,5 @@ public class Starred extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
-
     }
-
 }

@@ -7,5 +7,6 @@
     <string name="title_activity_single_item">SingleItem</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_starred">Starred</string>
+    <string name="title_activity_downloaded">Downloaded</string>
 
 </resources>

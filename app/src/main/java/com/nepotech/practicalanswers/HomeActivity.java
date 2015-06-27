@@ -48,5 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void downloaded(View view) {
+        Intent intent = new Intent(this, Downloaded.class);
+        startActivity(intent);
     }
 }

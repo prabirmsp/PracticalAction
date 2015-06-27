@@ -66,6 +66,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nepotech.practicalanswers.HomeActivity" />
         </activity>
+        <activity
+            android:name=".Downloaded"
+            android:label="@string/title_activity_downloaded"
+            android:parentActivityName=".HomeActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nepotech.practicalanswers.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>
