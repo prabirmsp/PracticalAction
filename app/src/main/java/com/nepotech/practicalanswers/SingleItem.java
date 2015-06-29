@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -144,6 +145,45 @@ public class SingleItem extends AppCompatActivity {
             }
         });
 
+        download_ll.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AlertDialog.Builder(SingleItem.this)
+                        .setTitle("Delete File")
+                        .setMessage("Are you sure you want to delete the downloaded file?")
+                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mDataSource.open();
+                                File file = new File(
+                                        Global.ExtFolderPath + mDataSource.getFileName(mItem.getDspaceId()));
+                                Log.d("DELETEFILE", file.getPath());
+                                if (file.exists()) {
+                                    if (file.delete()) {
+                                        mDataSource.removeDowloaded(mItem.getDspaceId());
+                                        Toast.makeText(SingleItem.this, "File Deleted Sucessfully", Toast.LENGTH_LONG).show();
+                                        finish();
+                                    }
+                                    snackbar("File could not be deleted.");
+                                } else {
+                                    snackbar("File could not be found.");
+                                }
+                                mDataSource.close();
+                            }
+                        })
+                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // cancel - do nothing
+                            }
+                        })
+                        .show();
+
+
+                return false;
+            }
+        });
+
         share_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,8 +219,7 @@ public class SingleItem extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             // Create Directory if not exist
-            File dir = new File(Environment.getExternalStorageDirectory().toString()
-                    + File.separator + Global.ExtFolderName);
+            File dir = new File(Global.ExtFolderPath);
             if (!dir.exists()) {
                 if (dir.mkdir()) {
                     Log.i("FileDownloader", "SD Directory Created");

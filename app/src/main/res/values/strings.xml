@@ -8,5 +8,7 @@
     <string name="title_activity_home">HomeActivity</string>
     <string name="title_activity_starred">Starred</string>
     <string name="title_activity_downloaded">Downloaded</string>
+    <string name="title_activity_search_results">SearchResultsActivity</string>
+    <string name="title_activity_community_details">CommunityDetailsActivity</string>
 
 </resources>

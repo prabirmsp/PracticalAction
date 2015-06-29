@@ -179,7 +179,8 @@ public class SingleCommunity extends AppCompatActivity {
                 for (int i = 0; i < items.length(); i++) {
                     JSONObject jsonItem = items.getJSONObject(i);
 
-                    String collection_id = jsonItem.getString(TAG_COLLECTION_ID);
+                    //String collection_id = jsonItem.getString(TAG_COLLECTION_ID);
+                    String collection_id = mCommunity.getDspace_id();
                     String dspace_id = jsonItem.getString(TAG_DSPACE_ID);
                     String creator = jsonItem.getString(TAG_CREATOR);
                     String publisher = jsonItem.getString(TAG_PUBLISHER);

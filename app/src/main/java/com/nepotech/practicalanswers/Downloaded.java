@@ -44,8 +44,9 @@ public class Downloaded extends AppCompatActivity {
 
         mDataSource.open();
 
-        mDownloadedItems = mDataSource.getAllStarred();
-        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mDownloadedItems, "Starred");
+        mDownloadedItems = mDataSource.getAllDownloaded();
+
+        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mDownloadedItems, "Downloaded");
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mDataSource.close();

@@ -11,6 +11,10 @@
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="android.app.default_searchable"
+            android:value=".SearchResultsActivity" />
+
         <activity
             android:name=".Splash"
             android:label="@string/app_name" >
@@ -38,6 +42,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".HomeActivity" />
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
         </activity>
         <activity
             android:name=".SingleCommunity"
@@ -73,6 +80,25 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nepotech.practicalanswers.HomeActivity" />
+        </activity>
+        <activity
+            android:name=".SearchResultsActivity"
+            android:label="@string/title_activity_search_results" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+        <activity
+            android:name=".CommunityDetailsActivity"
+            android:label="@string/title_activity_community_details"
+            android:parentActivityName=".OurResourcesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nepotech.practicalanswers.OurResourcesActivity" />
         </activity>
     </application>
 

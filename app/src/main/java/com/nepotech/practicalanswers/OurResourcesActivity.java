@@ -2,6 +2,8 @@ package com.nepotech.practicalanswers;
 
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -9,6 +11,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -124,12 +127,23 @@ public class OurResourcesActivity extends AppCompatActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Intent intent = new Intent(OurResourcesActivity.this, SingleCommunity.class);
-                intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
-                        mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
-                intent.putExtra(TABLE, CommunityDBHelper.TABLE_CHILD_COMMUNITY);
-                intent.putExtra(TITLE, mParentCommunities.get(groupPosition).getTitle());
-                startActivity(intent);
+                Community comm = mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition);
+                int rgt = Integer.parseInt(comm.getRgt());
+                int lft = Integer.parseInt(comm.getLft());
+                boolean val = (Integer.parseInt(comm.getRgt()) - Integer.parseInt(comm.getLft())) > 1;
+                if ((Integer.parseInt(comm.getRgt()) - Integer.parseInt(comm.getLft())) > 1) {
+                    // child community contains sub communities
+                    snackbar("subbchic");
+
+                } else {
+
+                    Intent intent = new Intent(OurResourcesActivity.this, SingleCommunity.class);
+                    intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
+                            mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
+                    intent.putExtra(TABLE, CommunityDBHelper.TABLE_CHILD_COMMUNITY);
+                    intent.putExtra(TITLE, mParentCommunities.get(groupPosition).getTitle());
+                    startActivity(intent);
+                }
                 return false;
             }
         });
@@ -183,6 +197,27 @@ public class OurResourcesActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Intent intent = new Intent(OurResourcesActivity.this, SearchResultsActivity.class);
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return true;
     }
 
