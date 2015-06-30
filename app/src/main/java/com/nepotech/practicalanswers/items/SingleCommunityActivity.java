@@ -13,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
@@ -42,7 +43,6 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mListViewAdapter;
-    CollapsingToolbarLayout collapsingToolbar;
     SwipeRefreshLayout mSwipeRefresh;
 
     // JSON Nodes
@@ -69,16 +69,13 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
         // get from xml
         mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.anim_toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mSwipeRefresh.setEnabled(false);
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
         // fix setRefreshing(true)
-        mSwipeRefresh.setProgressViewOffset(false, 0, 1);
+        mSwipeRefresh.setProgressViewOffset(false,
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
 
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
@@ -96,10 +93,6 @@ public class SingleCommunityActivity extends AppCompatActivity {
         dataSource.close();
 
         mWindowTitle = URLDecoder.decode(mCommunity.getTitle());
-        collapsingToolbar.setTitle(mWindowTitle);
-
-        ImageView headerIV = (ImageView) findViewById(R.id.header);
-        //Picasso.with(this).load(mCommunity.getImageurl()).into(headerIV);
 
         mItemsDataSource = new ItemsDataSource(this);
 
@@ -110,6 +103,13 @@ public class SingleCommunityActivity extends AppCompatActivity {
             snackbar("Data Received from DB!");
             mSwipeRefresh.setRefreshing(false);
         }
+
+        mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new GetItems().execute();
+            }
+        });
     }
 
     // Get items list from database

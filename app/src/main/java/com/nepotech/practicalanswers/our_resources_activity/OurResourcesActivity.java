@@ -80,8 +80,8 @@ public class OurResourcesActivity extends AppCompatActivity {
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
         // fix setRefreshing(true)
         mSwipeRefresh.setProgressViewOffset(false,
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -24, getResources().getDisplayMetrics()),
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
 
         mSwipeRefresh.setRefreshing(true);
         if (getMapFromDB() != 0) {
