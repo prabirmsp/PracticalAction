@@ -1,9 +1,10 @@
 package com.nepotech.practicalanswers.home_activity;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -11,14 +12,20 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.nepotech.practicalanswers.R;
-import com.nepotech.practicalanswers.home_activity.Downloaded;
-import com.nepotech.practicalanswers.home_activity.Starred;
+import com.nepotech.practicalanswers.items.Item;
+import com.nepotech.practicalanswers.items.ItemsDataSource;
+import com.nepotech.practicalanswers.items.ItemsRecyclerViewAdapter;
 import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
+
+import java.net.URLDecoder;
+import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     GridLayoutManager mGlm;
+    ArrayList<HomeRecyclerItem> mContent;
+    ItemsDataSource mItemsSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,46 @@ public class HomeActivity extends AppCompatActivity {
         });
         mRecyclerView.setLayoutManager(mGlm);
 
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+
+        ArrayList<Item> arrayList = new ArrayList<>();
+
+        // Add content
+        mContent = new ArrayList<>();
+        mContent.add(new HomeRecyclerItem(HomeRecyclerItem.BANNER, true)); // add banner
+        mItemsSource = new ItemsDataSource(this);
+        mItemsSource.open();
+        // add downloaded header
+        mContent.add(new HomeRecyclerItem(HomeRecyclerItem.HEADER, "Downloaded Files", null, true));
+        // add downloaded content
+        arrayList = mItemsSource.getAllDownloaded();
+        for (int i = 0; i < 3; i++) {
+            if (i < arrayList.size()) {
+                Item item = arrayList.get(i);
+                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(), true));
+            }
+            else
+                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, false));
+        }
+        // add starred header
+        mContent.add(new HomeRecyclerItem(HomeRecyclerItem.HEADER, "Starred Items", null, true));
+        // add starred content
+        arrayList = mItemsSource.getAllStarred();
+        for (int i = 0; i < 3; i++) {
+            if (i < arrayList.size()) {
+                Item item = arrayList.get(i);
+                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(), true));
+            }
+            else
+                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, false));
+        }
+
+        HomeRecyclerAdapter adapter = new HomeRecyclerAdapter(this, mContent);
+        mRecyclerView.setAdapter(adapter);
+
 
 
     }
@@ -65,7 +112,6 @@ public class HomeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-
 
 
             return true;
@@ -96,21 +142,29 @@ public class HomeActivity extends AppCompatActivity {
 
         int viewType;
         String text;
-        String subtext;
         String imageHref;
         int drawable;
         boolean visible;
 
-        public HomeRecyclerItem (int viewType, String text, @Nullable String subtext,
-                                 @Nullable String imageHref, @Nullable int drawable, boolean visible) {
+        public HomeRecyclerItem(int viewType, @Nullable String text, int drawable, boolean visible) {
             this.viewType = viewType;
             this.text = text;
-            this.subtext = subtext;
-            this.imageHref = imageHref;
             this.drawable = drawable;
             this.visible = visible;
         }
 
+        public HomeRecyclerItem(int viewType, @Nullable String text, @Nullable String imageHref,
+                                boolean visible) {
+            this.viewType = viewType;
+            this.text = text;
+            this.imageHref = imageHref;
+            this.visible = visible;
+        }
+
+        public HomeRecyclerItem(int viewType, boolean visible) {
+            this.viewType = viewType;
+            this.visible = visible;
+        }
 
 
     }
