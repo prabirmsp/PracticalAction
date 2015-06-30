@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.our_resources_activity;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -12,9 +12,10 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nepotech.practicalanswers.Global;
+import com.nepotech.practicalanswers.R;
+import com.nepotech.practicalanswers.community.Community;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;

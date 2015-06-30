@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.items;
 
 /**
  * Created by prabir on 6/23/15.

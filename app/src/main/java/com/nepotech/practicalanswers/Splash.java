@@ -3,9 +3,10 @@ package com.nepotech.practicalanswers;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.Window;
+
+import com.nepotech.practicalanswers.home_activity.HomeActivity;
 
 
 public class Splash extends Activity {

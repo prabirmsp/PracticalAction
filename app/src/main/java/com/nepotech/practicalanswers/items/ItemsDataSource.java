@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.items;
 
 
 import android.content.ContentValues;

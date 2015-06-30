@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.home_activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.nepotech.practicalanswers.items.ItemsRecyclerViewAdapter;
+import com.nepotech.practicalanswers.R;
+import com.nepotech.practicalanswers.items.Item;
+import com.nepotech.practicalanswers.items.ItemsDataSource;
 
 import java.util.ArrayList;
 

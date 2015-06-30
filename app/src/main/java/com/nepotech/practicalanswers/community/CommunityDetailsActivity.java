@@ -1,9 +1,11 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.community;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.nepotech.practicalanswers.R;
 
 public class CommunityDetailsActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.community;
 
 import org.json.JSONException;
 import org.json.JSONObject;

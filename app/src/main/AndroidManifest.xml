@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".home_activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop" >
             <intent-filter>
@@ -35,51 +35,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OurResourcesActivity"
+            android:name=".our_resources_activity.OurResourcesActivity"
             android:label="Our Resources"
             android:launchMode="singleTop"
-            android:parentActivityName=".HomeActivity" >
+            android:parentActivityName=".home_activity.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".HomeActivity" />
+                android:value=".home_activity.HomeActivity" />
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".SingleCommunity"
+            android:name=".items.SingleCommunityActivity"
             android:label="Collections"
             android:launchMode="singleTop"
-            android:parentActivityName=".OurResourcesActivity"
+            android:parentActivityName=".our_resources_activity.OurResourcesActivity"
             android:theme="@style/SingleCommunityTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".OurResourcesActivity" />
+                android:value=".our_resources_activity.OurResourcesActivity" />
         </activity>
         <activity
-            android:name=".SingleItem"
+            android:name=".items.SingleItemActivity"
             android:label="@string/title_activity_single_item"
-            android:parentActivityName=".SingleCommunity"
+            android:parentActivityName=".items.SingleCommunityActivity"
             android:theme="@style/SingleItemTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".SingleCommunity" />
+                android:value=".items.SingleCommunityActivity" />
         </activity>
         <activity
-            android:name=".Starred"
+            android:name=".home_activity.Starred"
             android:label="@string/title_activity_starred"
-            android:parentActivityName=".HomeActivity" >
+            android:parentActivityName=".home_activity.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nepotech.practicalanswers.HomeActivity" />
+                android:value=".home_activity.HomeActivity" />
         </activity>
         <activity
-            android:name=".Downloaded"
+            android:name=".home_activity.Downloaded"
             android:label="@string/title_activity_downloaded"
-            android:parentActivityName=".HomeActivity" >
+            android:parentActivityName=".home_activity.HomeActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nepotech.practicalanswers.HomeActivity" />
+                android:value=".home_activity.HomeActivity" />
         </activity>
         <activity
             android:name=".SearchResultsActivity"
@@ -93,12 +93,12 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".CommunityDetailsActivity"
+            android:name=".community.CommunityDetailsActivity"
             android:label="@string/title_activity_community_details"
-            android:parentActivityName=".OurResourcesActivity" >
+            android:parentActivityName=".our_resources_activity.OurResourcesActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nepotech.practicalanswers.OurResourcesActivity" />
+                android:value=".our_resources_activity.OurResourcesActivity" />
         </activity>
     </application>
 

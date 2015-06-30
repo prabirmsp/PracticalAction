@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.items;
 
 
 import android.content.Context;
@@ -14,6 +14,7 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     protected final static String TABLE_ITEMS = "dspace_items";
     protected final static String TABLE_STARRED = "starred_items";
     protected final static String TABLE_DOWNLOADED = "downloaded_items";
+    protected final static String TABLE_RECENTS= "recent_items";
 
     public static final String COLUMN_ID = "id";
     public static final String COLUMN_DSPACE_ID = "dspace_id";
@@ -59,6 +60,10 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
                     COLUMN_ID + " integer primary key autoincrement , " +
                     COLUMN_DSPACE_ID + " text not null, " +
                     COLUMN_FILENAME + " text not null)";
+    private static final String CREATE_TABLE_RECENTS =
+            "create table " + TABLE_RECENTS + "(" +
+                    COLUMN_ID + " integer primary key autoincrement , " +
+                    COLUMN_DSPACE_ID + " text not null)";
 
     public ItemsDBHelper(Context context) {
         super(context, DB_ITEMS, null, DB_ITEMS_VERSION);

@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.our_resources_activity;
 
 
 import android.app.AlertDialog;
@@ -23,6 +23,15 @@ import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.TextView;
 
+import com.nepotech.practicalanswers.Global;
+import com.nepotech.practicalanswers.R;
+import com.nepotech.practicalanswers.SearchResultsActivity;
+import com.nepotech.practicalanswers.ServiceHandler;
+import com.nepotech.practicalanswers.items.SingleCommunityActivity;
+import com.nepotech.practicalanswers.community.Community;
+import com.nepotech.practicalanswers.community.CommunityDBHelper;
+import com.nepotech.practicalanswers.community.CommunityDataSource;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,8 +41,8 @@ import java.util.HashMap;
 
 public class OurResourcesActivity extends AppCompatActivity {
 
-    protected static final String TABLE = "table";
-    protected static final String TITLE = "title";
+    public static final String TABLE = "table";
+    public static final String TITLE = "title";
     // JSON Node names
     private static final String TAG_COMMUNITY = "communities"; // wrapper object name
     private static final String TAG_ID = "id";
@@ -87,7 +96,7 @@ public class OurResourcesActivity extends AppCompatActivity {
                      "Group Clicked " + listDataChild.get(listDataHeader.get(groupPosition)),
 	                Toast.LENGTH_SHORT).show();*/
                 if (mChildrenMap.get(mParentCommunities.get(groupPosition)).size() == 0) {
-                    Intent intent = new Intent(OurResourcesActivity.this, SingleCommunity.class);
+                    Intent intent = new Intent(OurResourcesActivity.this, SingleCommunityActivity.class);
                     intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
                             mParentCommunities.get(groupPosition).getDspace_id());
                     intent.putExtra(TABLE, CommunityDBHelper.TABLE_COMMUNITY);
@@ -137,7 +146,7 @@ public class OurResourcesActivity extends AppCompatActivity {
 
                 } else {
 
-                    Intent intent = new Intent(OurResourcesActivity.this, SingleCommunity.class);
+                    Intent intent = new Intent(OurResourcesActivity.this, SingleCommunityActivity.class);
                     intent.putExtra(CommunityDBHelper.COLUMN_DSPACE_ID,
                             mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
                     intent.putExtra(TABLE, CommunityDBHelper.TABLE_CHILD_COMMUNITY);

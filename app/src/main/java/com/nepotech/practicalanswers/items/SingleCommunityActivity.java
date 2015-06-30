@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.items;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +17,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import com.nepotech.practicalanswers.Global;
+import com.nepotech.practicalanswers.R;
+import com.nepotech.practicalanswers.ServiceHandler;
+import com.nepotech.practicalanswers.community.Community;
+import com.nepotech.practicalanswers.community.CommunityDBHelper;
+import com.nepotech.practicalanswers.community.CommunityDataSource;
+import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +32,7 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
-public class SingleCommunity extends AppCompatActivity {
+public class SingleCommunityActivity extends AppCompatActivity {
 
     protected Community mCommunity;
     String tableForCommunity;
@@ -112,7 +120,7 @@ public class SingleCommunity extends AppCompatActivity {
             mItems = temp;
             mItemsDataSource.close();
             // setting adapter
-            mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunity.this, mItems, mWindowTitle);
+            mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunityActivity.this, mItems, mWindowTitle);
             // setting list adapter
             mRecyclerView.setAdapter(mListViewAdapter);
             return 0;
@@ -225,7 +233,7 @@ public class SingleCommunity extends AppCompatActivity {
             // Dismiss loading indicator
             mSwipeRefresh.setRefreshing(false);
             // Alert Dialog
-            new AlertDialog.Builder(SingleCommunity.this).setTitle("Oh no!")
+            new AlertDialog.Builder(SingleCommunityActivity.this).setTitle("Oh no!")
                     .setMessage("Looks like we can't connect!")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override

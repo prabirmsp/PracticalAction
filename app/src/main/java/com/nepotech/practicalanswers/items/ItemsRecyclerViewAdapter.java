@@ -1,15 +1,15 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.items;
 
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nepotech.practicalanswers.R;
 import com.squareup.picasso.Picasso;
 
 import java.net.URLDecoder;
@@ -50,7 +50,7 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
         viewHolder.v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, SingleItem.class);
+                Intent intent = new Intent(mContext, SingleItemActivity.class);
                 intent.putExtra(ItemsDBHelper.COLUMN_DSPACE_ID, rowItem.getDspaceId());
                 intent.putExtra(ItemsDBHelper.COLUMN_TITLE, mWindowTitle);
                 mContext.startActivity(intent);

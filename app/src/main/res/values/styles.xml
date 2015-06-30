@@ -27,13 +27,13 @@
         <item name="background">@color/primary</item>
     </style>
 
-    <!-- Theme for SingleCommunity Activity -->
+    <!-- Theme for SingleCommunityActivity Activity -->
     <style name="SingleCommunityTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
     </style>
 
-    <!-- Theme for SingleItem Activity -->
+    <!-- Theme for SingleItemActivity Activity -->
     <style name="SingleItemTheme" parent="@style/AppTheme">
 
     </style>

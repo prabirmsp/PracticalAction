@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.items;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nepotech.practicalanswers.Global;
+import com.nepotech.practicalanswers.R;
 import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
@@ -28,7 +29,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 
-public class SingleItem extends AppCompatActivity {
+public class SingleItemActivity extends AppCompatActivity {
 
     private Item mItem;
     private ItemsDataSource mDataSource;
@@ -148,7 +149,7 @@ public class SingleItem extends AppCompatActivity {
         download_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                new AlertDialog.Builder(SingleItem.this)
+                new AlertDialog.Builder(SingleItemActivity.this)
                         .setTitle("Delete File")
                         .setMessage("Are you sure you want to delete the downloaded file?")
                         .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
@@ -161,7 +162,7 @@ public class SingleItem extends AppCompatActivity {
                                 if (file.exists()) {
                                     if (file.delete()) {
                                         mDataSource.removeDowloaded(mItem.getDspaceId());
-                                        Toast.makeText(SingleItem.this, "File Deleted Sucessfully", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(SingleItemActivity.this, "File Deleted Sucessfully", Toast.LENGTH_LONG).show();
                                         finish();
                                     }
                                     snackbar("File could not be deleted.");
@@ -228,7 +229,7 @@ public class SingleItem extends AppCompatActivity {
             }
 
             // Set up dialog for download
-            pDialog = new ProgressDialog(SingleItem.this);
+            pDialog = new ProgressDialog(SingleItemActivity.this);
             pDialog.setTitle("Downloading File");
             pDialog.setMessage("Please wait...");
             pDialog.setIndeterminate(false);

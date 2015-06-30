@@ -1,4 +1,4 @@
-package com.nepotech.practicalanswers;
+package com.nepotech.practicalanswers.community;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
