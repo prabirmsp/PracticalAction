@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -149,38 +151,7 @@ public class SingleItemActivity extends AppCompatActivity {
         download_ll.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                new AlertDialog.Builder(SingleItemActivity.this)
-                        .setTitle("Delete File")
-                        .setMessage("Are you sure you want to delete the downloaded file?")
-                        .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                mDataSource.open();
-                                File file = new File(
-                                        Global.ExtFolderPath + mDataSource.getFileName(mItem.getDspaceId()));
-                                Log.d("DELETEFILE", file.getPath());
-                                if (file.exists()) {
-                                    if (file.delete()) {
-                                        mDataSource.removeDowloaded(mItem.getDspaceId());
-                                        Toast.makeText(SingleItemActivity.this, "File Deleted Sucessfully", Toast.LENGTH_LONG).show();
-                                        finish();
-                                    }
-                                    snackbar("File could not be deleted.");
-                                } else {
-                                    snackbar("File could not be found.");
-                                }
-                                mDataSource.close();
-                            }
-                        })
-                        .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // cancel - do nothing
-                            }
-                        })
-                        .show();
-
-
+                deleteFile();
                 return false;
             }
         });
@@ -200,10 +171,67 @@ public class SingleItemActivity extends AppCompatActivity {
 
     }
 
+    private void deleteFile() {
+        new AlertDialog.Builder(SingleItemActivity.this)
+                .setTitle("Delete File")
+                .setMessage("Are you sure you want to delete the downloaded file?")
+                .setPositiveButton("DELETE", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mDataSource.open();
+                        File file = new File(
+                                Global.ExtFolderPath + mDataSource.getFileName(mItem.getDspaceId()));
+                        Log.d("DELETEFILE", file.getPath());
+                        if (file.exists()) {
+                            if (file.delete()) {
+                                mDataSource.removeDowloaded(mItem.getDspaceId());
+                                Toast.makeText(SingleItemActivity.this, "File Deleted Sucessfully", Toast.LENGTH_LONG).show();
+                                finish();
+                            }
+                            snackbar("File could not be deleted.");
+                        } else {
+                            snackbar("File could not be found.");
+                        }
+                        mDataSource.close();
+                    }
+                })
+                .setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // cancel - do nothing
+                    }
+                })
+                .show();
+    }
+
     @Override
     protected void onDestroy() {
         mDataSource.close();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, mItem.getDspaceId()))
+            getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.delete) {
+                deleteFile();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 

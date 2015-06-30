@@ -1,11 +1,29 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.nepotech.practicalanswers.Starred">
 
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/fillerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="100dp"
+            android:text="Nothing to see here!"
+            android:textColor="#BBBBBB"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
 
 </RelativeLayout>

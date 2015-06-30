@@ -77,6 +77,8 @@ public class SingleCommunityActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mSwipeRefresh.setEnabled(false);
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
+        // fix setRefreshing(true)
+        mSwipeRefresh.setProgressViewOffset(false, 0, 1);
 
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);

@@ -1,26 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="16dp"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="20dp">
+    android:padding="16dp">
 
     <TextView
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-bold"
         android:text="Section Header"
         android:textColor="@color/text_dark"
         android:textSize="20sp" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="MORE"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        />
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/button"
+        android:minHeight="0dp"
+        android:minWidth="0dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="8dp"
+        android:text="MORE"
+        android:textColor="@color/text_white"
+        android:textSize="12sp" />
+
 </RelativeLayout>

@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,12 +26,11 @@ import android.widget.TextView;
 
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
-import com.nepotech.practicalanswers.SearchResultsActivity;
 import com.nepotech.practicalanswers.ServiceHandler;
-import com.nepotech.practicalanswers.items.SingleCommunityActivity;
 import com.nepotech.practicalanswers.community.Community;
 import com.nepotech.practicalanswers.community.CommunityDBHelper;
 import com.nepotech.practicalanswers.community.CommunityDataSource;
+import com.nepotech.practicalanswers.items.SingleCommunityActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +78,10 @@ public class OurResourcesActivity extends AppCompatActivity {
 
         mTVNull.setVisibility(View.INVISIBLE);
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
+        // fix setRefreshing(true)
+        mSwipeRefresh.setProgressViewOffset(false,
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -24, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 24, getResources().getDisplayMetrics()));
 
         mSwipeRefresh.setRefreshing(true);
         if (getMapFromDB() != 0) {
@@ -214,19 +218,7 @@ public class OurResourcesActivity extends AppCompatActivity {
                 (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(
                 searchManager.getSearchableInfo(getComponentName()));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(OurResourcesActivity.this, SearchResultsActivity.class);
 
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
         return true;
     }
 

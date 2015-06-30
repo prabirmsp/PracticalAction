@@ -16,7 +16,7 @@
         android:layout_gravity="center_vertical"
         android:scaleType="fitXY"
         android:src="@drawable/arrow"
-        app:riv_corner_radius="4dp"
+        app:riv_corner_radius="2dp"
         app:riv_oval="false" />
 
     <TextView

@@ -14,7 +14,7 @@
         android:src="@drawable/arrow"
         android:scaleType="fitXY"
         android:layout_gravity="center_vertical"
-        app:riv_corner_radius="12dp"
+        app:riv_corner_radius="4dp"
         app:riv_oval="false"/>
 
     <LinearLayout
