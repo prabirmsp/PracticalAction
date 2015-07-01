@@ -89,7 +89,7 @@ public class OurResourcesActivity extends AppCompatActivity {
         if (getMapFromDB() != 0) {
             refreshData();
         } else {
-            snackbar("Data Recieved from DB!");
+            // snackbar("Data Recieved from DB!");
             mSwipeRefresh.setRefreshing(false);
         }
 

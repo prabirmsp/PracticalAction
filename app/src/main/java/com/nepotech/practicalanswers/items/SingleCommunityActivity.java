@@ -112,7 +112,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         if (getItemsFromDB(mLangFilter) != 0)
             new GetItems().execute();
         else {
-            snackbar("Data Received from DB!");
+            // snackbar("Data Received from DB!");
             mSwipeRefresh.setRefreshing(false);
         }
 
