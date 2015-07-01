@@ -15,8 +15,9 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     protected final static String TABLE_STARRED = "starred_items";
     protected final static String TABLE_DOWNLOADED = "downloaded_items";
     protected final static String TABLE_RECENTS= "recent_items";
+    protected final static String TABLE_LANGUAGES= "languages";
 
-    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DSPACE_ID = "dspace_id";
     public static final String COLUMN_COLLECTION_ID = "parent_id";
     public static final String COLUMN_TITLE = "title";
@@ -64,6 +65,10 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
             "create table " + TABLE_RECENTS + "(" +
                     COLUMN_ID + " integer primary key autoincrement , " +
                     COLUMN_DSPACE_ID + " text not null)";
+    private static final String CREATE_TABLE_LANGUAGES =
+            "create table " + TABLE_LANGUAGES + "(" +
+                    COLUMN_ID + " integer primary key autoincrement , " +
+                    COLUMN_LANGUAGE + " text not null)";
 
     public ItemsDBHelper(Context context) {
         super(context, DB_ITEMS, null, DB_ITEMS_VERSION);
@@ -74,6 +79,7 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_COMMUNITY);
         db.execSQL(CREATE_TABLE_STARRED);
         db.execSQL(CREATE_TABLE_DOWNLOADED);
+        db.execSQL(CREATE_TABLE_LANGUAGES);
     }
 
     @Override

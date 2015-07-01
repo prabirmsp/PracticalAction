@@ -6,8 +6,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ItemsDataSource {
 
@@ -65,15 +67,42 @@ public class ItemsDataSource {
         values.put(ItemsDBHelper.COLUMN_DOCUMENT_THUMB_HREF, documentThumbHref);
         values.put(ItemsDBHelper.COLUMN_DOCUMENT_HREF, documentHref);
         values.put(ItemsDBHelper.COLUMN_DOCUMENT_SIZE, documentSize);
+
+        // Add language to index
+        Cursor cu = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_LANGUAGES, null);
+        cu.moveToFirst();
+        boolean indexed = false;
+        while (!cu.isAfterLast()) {
+            String lang = cu.getString(cu.getColumnIndex(ItemsDBHelper.COLUMN_LANGUAGE));
+            if (lang.equalsIgnoreCase(language)) {
+                indexed = true;
+                break;
+            }
+            cu.moveToNext();
+        }
+        cu.close();
+        if (!indexed) {
+            ContentValues v = new ContentValues();
+            v.put(ItemsDBHelper.COLUMN_LANGUAGE, language);
+            mDatabase.insert(ItemsDBHelper.TABLE_LANGUAGES, null, v);
+        }
+
         return mDatabase.insert(ItemsDBHelper.TABLE_ITEMS, null, values);
     }
 
     // READ items
-    public ArrayList<Item> getItemsFromCollection(String collectionId) {
+    public ArrayList<Item> getItemsFromCollection(String collectionId, @Nullable String whereClause) {
         ArrayList<Item> arrayList = new ArrayList<>();
-        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS +
+        String query;
+        if (whereClause != null)
+            query = "SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS +
+                    " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
+                    "' and " + whereClause + " ORDER BY " + ItemsDBHelper.COLUMN_TITLE;
+        else
+            query = "SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS +
                 " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
-                "' ORDER BY " + ItemsDBHelper.COLUMN_TITLE, null);
+                "' ORDER BY " + ItemsDBHelper.COLUMN_TITLE;
+        Cursor cursor = mDatabase.rawQuery(query, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             arrayList.add(cursorToItem(cursor));
@@ -111,7 +140,9 @@ public class ItemsDataSource {
         return present;
     }
 
-    /** Starring operations **/
+    /**
+     * Starring operations
+     **/
     public void addStar(String dspace_id) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
@@ -123,7 +154,7 @@ public class ItemsDataSource {
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
     }
 
-    public ArrayList<Item> getAllStarred () {
+    public ArrayList<Item> getAllStarred() {
         ArrayList<Item> arrayList = new ArrayList<>();
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_STARRED +
                 " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
@@ -137,7 +168,9 @@ public class ItemsDataSource {
         return arrayList;
     }
 
-    /** Downloaded operations **/
+    /**
+     * Downloaded operations
+     **/
     public void addDownloaded(String dspace_id, String fileName) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ItemsDBHelper.COLUMN_DSPACE_ID, dspace_id);
@@ -150,7 +183,7 @@ public class ItemsDataSource {
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'", null);
     }
 
-    public ArrayList<Item> getAllDownloaded () {
+    public ArrayList<Item> getAllDownloaded() {
         ArrayList<Item> arrayList = new ArrayList<>();
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_DOWNLOADED +
                 " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
@@ -174,5 +207,38 @@ public class ItemsDataSource {
 
     }
 
+    /** language filter operations **/
+    public ArrayList<String> getAllLanguages () {
+        ArrayList<String> arrayList= new ArrayList<String>();
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_LANGUAGES +
+                " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String language = cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_LANGUAGE));
+            arrayList.add(language);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return arrayList;
+    }
+
+    public ArrayList<String> getLanguagesInCollection (String collectionId) {
+        ArrayList<String> arrayList= new ArrayList<>();
+        Cursor cu = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS +
+                    " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
+                    "' ORDER BY " + ItemsDBHelper.COLUMN_LANGUAGE, null);
+        cu.moveToFirst();
+        String current, previous = null;
+        while (!cu.isAfterLast()) {
+            current = cu.getString(cu.getColumnIndex(ItemsDBHelper.COLUMN_LANGUAGE));
+            if (!current.equals(previous)) {
+                arrayList.add(current);
+            }
+            previous = current;
+            cu.moveToNext();
+        }
+        cu.close();
+        return arrayList;
+    }
 
 }

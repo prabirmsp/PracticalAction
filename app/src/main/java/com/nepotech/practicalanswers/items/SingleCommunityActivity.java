@@ -1,22 +1,25 @@
 package com.nepotech.practicalanswers.items;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
@@ -40,10 +43,13 @@ public class SingleCommunityActivity extends AppCompatActivity {
     ArrayList<Item> mItems;
     ItemsDataSource mItemsDataSource;
     String mWindowTitle;
+    String mLangFilter;
+    private static final String LANG_ALL = "All";
 
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mListViewAdapter;
     SwipeRefreshLayout mSwipeRefresh;
+    FloatingActionButton mFab;
 
     // JSON Nodes
     private static final String TAG_ITEMS = "community_items"; // wrapper object name
@@ -69,6 +75,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
         // get from xml
         mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
+        mFab = (FloatingActionButton) findViewById(R.id.fab);
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
 
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
@@ -84,7 +91,6 @@ public class SingleCommunityActivity extends AppCompatActivity {
         Intent thisIntent = getIntent();
         String dspace_id = thisIntent.getStringExtra(CommunityDBHelper.COLUMN_DSPACE_ID);
         tableForCommunity = thisIntent.getStringExtra(OurResourcesActivity.TABLE);
-        String parentTitle = thisIntent.getStringExtra(OurResourcesActivity.TITLE);
 
         // get parent community
         CommunityDataSource dataSource = new CommunityDataSource(this);
@@ -93,11 +99,15 @@ public class SingleCommunityActivity extends AppCompatActivity {
         dataSource.close();
 
         mWindowTitle = URLDecoder.decode(mCommunity.getTitle());
+        setTitle(mWindowTitle);
 
         mItemsDataSource = new ItemsDataSource(this);
 
         mSwipeRefresh.setRefreshing(true);
-        if (getItemsFromDB() != 0)
+        mFab.setClickable(false);
+
+        mLangFilter = LANG_ALL;
+        if (getItemsFromDB(mLangFilter) != 0)
             new GetItems().execute();
         else {
             snackbar("Data Received from DB!");
@@ -112,11 +122,61 @@ public class SingleCommunityActivity extends AppCompatActivity {
         });
     }
 
+    private void setupFilterDialog() {
+        /** Set up dialog for filter **/
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.filter_dialog);
+        dialog.setTitle("Select Filter");
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                getItemsFromDB(mLangFilter);
+            }
+        });
+        Spinner lang_spinner = (Spinner) dialog.findViewById(R.id.spinner_lang);
+        mItemsDataSource.open();
+        final ArrayList<String> langList = mItemsDataSource.getLanguagesInCollection(mCommunity.getDspace_id());
+        langList.add(0, LANG_ALL); // add All to beginning
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_list_item_1, langList);
+        lang_spinner.setAdapter(adapter);
+        lang_spinner.setSelection(langList.indexOf(mLangFilter));
+        lang_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean firstSelect = true;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (firstSelect) {
+                    firstSelect = false;
+                    return;
+                }
+                mLangFilter = langList.get(position);
+                dialog.dismiss();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mLangFilter = LANG_ALL;
+            }
+        });
+
+        mFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
+            }
+        });
+        mItemsDataSource.close();
+    }
+
     // Get items list from database
-    private int getItemsFromDB() {
+    private int getItemsFromDB(String lang) {
+        mFab.setClickable(true);
+        String langQuery = ItemsDBHelper.COLUMN_LANGUAGE + " = '" + lang + "'";
+        if (lang.equals(LANG_ALL))
+            langQuery = null;
         mItemsDataSource.open();
         mItems = new ArrayList<>();
-        ArrayList<Item> temp = mItemsDataSource.getItemsFromCollection(mCommunity.getDspace_id());
+        ArrayList<Item> temp = mItemsDataSource.getItemsFromCollection(mCommunity.getDspace_id(),
+                langQuery);
         if (!temp.isEmpty()) { // Data found in DB
             Log.d("SingleComm.getMapFromDB", "Data Found!!!");
             mItems = temp;
@@ -125,6 +185,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
             mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunityActivity.this, mItems, mWindowTitle);
             // setting list adapter
             mRecyclerView.setAdapter(mListViewAdapter);
+            setupFilterDialog();
             return 0;
         } else { // Data not found in DB
             mItemsDataSource.close();
@@ -223,7 +284,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             snackbar("Successfully updated!");
-            getItemsFromDB();
+            getItemsFromDB(mLangFilter);
             // Dismiss loading indicator
             mSwipeRefresh.setRefreshing(false);
             super.onPostExecute(aVoid);

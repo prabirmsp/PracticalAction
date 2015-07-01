@@ -12,7 +12,6 @@
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_insert_drive_file_black_48dp"
             android:adjustViewBounds="true"/>
         <TextView
             android:id="@+id/text"
