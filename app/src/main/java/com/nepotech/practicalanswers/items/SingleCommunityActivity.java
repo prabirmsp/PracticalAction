@@ -21,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.ServiceHandler;
@@ -71,6 +72,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.activity_singlecommunity);
 
         // get from xml

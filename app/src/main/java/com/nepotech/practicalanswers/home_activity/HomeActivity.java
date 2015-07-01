@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.items.Item;
 import com.nepotech.practicalanswers.items.ItemsDataSource;
@@ -30,6 +31,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.activity_home);
 
         setTitle("Practical Action");
@@ -65,21 +67,7 @@ public class HomeActivity extends AppCompatActivity {
         mContent.add(new HomeRecyclerItem(HomeRecyclerItem.BANNER, 0, true));
         mItemsSource = new ItemsDataSource(this);
         mItemsSource.open();
-        // add downloaded header
-        mContent.add(new HomeRecyclerItem(
-                HomeRecyclerItem.HEADER, "Downloaded Files",
-                new Intent(HomeActivity.this, Downloaded.class)));
-        // add downloaded content
-        arrayList = mItemsSource.getAllDownloaded();
-        for (int i = 0; i < 3; i++) {
-            if (i < arrayList.size()) {
-                Item item = arrayList.get(i);
-                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
-                        "Downloaded", item.getDspaceId(), i + 1, true));
-            } else
-                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
-        }
+
         // add starred header
         mContent.add(new HomeRecyclerItem(
                 HomeRecyclerItem.HEADER, "Starred Items",
@@ -96,6 +84,21 @@ public class HomeActivity extends AppCompatActivity {
                 mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
         }
 
+        // add downloaded header
+        mContent.add(new HomeRecyclerItem(
+                HomeRecyclerItem.HEADER, "Downloaded Files",
+                new Intent(HomeActivity.this, Downloaded.class)));
+        // add downloaded content
+        arrayList = mItemsSource.getAllDownloaded();
+        for (int i = 0; i < 3; i++) {
+            if (i < arrayList.size()) {
+                Item item = arrayList.get(i);
+                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
+                        "Downloaded", item.getDspaceId(), i + 1, true));
+            } else
+                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+        }
         mItemsSource.close();
 
         HomeRecyclerAdapter adapter = new HomeRecyclerAdapter(this, mContent);

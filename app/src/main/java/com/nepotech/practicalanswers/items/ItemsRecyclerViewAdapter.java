@@ -2,6 +2,9 @@ package com.nepotech.practicalanswers.items;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +12,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nepotech.practicalanswers.R;
-import com.squareup.picasso.Picasso;
 
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -44,7 +53,7 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         final Item rowItem = mItems.get(i);
 
         viewHolder.v.setOnClickListener(new View.OnClickListener() {
@@ -61,9 +70,40 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
         // set textviews
         viewHolder.txtDesc.setText(URLDecoder.decode(rowItem.getDescription()));
         viewHolder.txtTitle.setText(URLDecoder.decode(rowItem.getTitle()));
-        String imageUrl = "" + URLDecoder.decode(rowItem.getDocumentThumbHref());
+        String imageUrl = URLDecoder.decode(rowItem.getDocumentThumbHref());
+
         // set document thumb imageview
-        Picasso.with(mContext).load(imageUrl).into(viewHolder.imageView);
+        Uri uri = Uri.parse(imageUrl.replace(" ", "%20"));
+        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+            @Override
+            public void onFinalImageSet(
+                    String id,
+                    @Nullable ImageInfo imageInfo,
+                    @Nullable Animatable anim) {
+                if (imageInfo == null) {
+                    return;
+                }
+                viewHolder.draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+            }
+
+            @Override
+            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+                    if (imageInfo == null) {
+                        return;
+                    }
+                viewHolder.draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+            }
+
+            @Override
+            public void onFailure(String id, Throwable throwable) {
+                FLog.e(getClass(), throwable, "Error loading %s", id);
+            }
+        };
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setControllerListener(controllerListener)
+                .setUri(uri)
+                .build();
+        viewHolder.draweeView.setController(controller);
     }
 
     @Override
@@ -74,7 +114,7 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
 
     // ViewHolder Class //
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
+        SimpleDraweeView draweeView;
         TextView txtTitle;
         TextView txtDesc;
         View v;
@@ -84,8 +124,7 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
             this.v = v;
             txtDesc = (TextView) v.findViewById(R.id.item_description);
             txtTitle = (TextView) v.findViewById(R.id.item_title);
-            imageView = (ImageView) v.findViewById(R.id.doc_thumb);
-
+            draweeView = (SimpleDraweeView) v.findViewById(R.id.doc_thumb);
         }
     }
 }

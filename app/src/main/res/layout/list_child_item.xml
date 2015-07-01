@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:id="@+id/ll"
@@ -9,19 +10,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.makeramen.roundedimageview.RoundedImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/imageView1"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="4dp"
-            android:layout_marginLeft="40dp"
+            android:layout_marginLeft="48dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="4dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/arrow"
-            app:riv_corner_radius="2dp"
-            app:riv_oval="false" />
+            fresco:placeholderImage="@drawable/ic_insert_drive_file_black_48dp"
+            fresco:roundedCornerRadius="2dp"/>
 
         <TextView
             android:id="@+id/lblListItem"
@@ -34,10 +34,14 @@
         <!-- android:layout_marginLeft="10dp"  -->
 
     </LinearLayout>
-    <View android:layout_width="match_parent"
-        android:layout_below="@id/ll"
+
+    <View
+        android:layout_width="match_parent"
         android:layout_height="0.25dp"
-        android:background="@color/grey"
-        android:layout_marginLeft="120dp"
-        android:layout_marginRight="24dp"/>
+        android:layout_below="@id/ll"
+        android:layout_marginLeft="128dp"
+        android:layout_marginStart="128dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/grey" />
 </RelativeLayout>

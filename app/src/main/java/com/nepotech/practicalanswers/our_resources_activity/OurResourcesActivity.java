@@ -24,6 +24,7 @@ import android.widget.ExpandableListView.OnGroupCollapseListener;
 import android.widget.ExpandableListView.OnGroupExpandListener;
 import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.ServiceHandler;
@@ -67,6 +68,7 @@ public class OurResourcesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.activity_main);
 
         // lint to xml

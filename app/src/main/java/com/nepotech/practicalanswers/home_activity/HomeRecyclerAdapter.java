@@ -2,6 +2,9 @@ package com.nepotech.practicalanswers.home_activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,15 +15,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.items.ItemsDBHelper;
 import com.nepotech.practicalanswers.items.SingleItemActivity;
 import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ViewHolder> {
@@ -101,13 +111,45 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     }
 
 
-    private void onBindItem(ViewHolder holder, int position, final HomeActivity.HomeRecyclerItem item) {
+    private void onBindItem(final ViewHolder holder, int position, final HomeActivity.HomeRecyclerItem item) {
         if (item.visible) {
             holder.textView.setText(item.text);
             holder.textView.setMaxLines(3);
             holder.textView.setEllipsize(TextUtils.TruncateAt.END);
-            //     Picasso.with(mContext).load(item.imageHref).into(holder.imageView);
-            holder.imageView.setImageResource(R.drawable.ic_insert_drive_file_black_48dp);
+
+            // set document thumb imageview
+            Uri uri = Uri.parse(URLDecoder.decode(item.imageHref).replace(" ", "%20"));
+
+            ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+                @Override
+                public void onFinalImageSet(
+                        String id,
+                        @Nullable ImageInfo imageInfo,
+                        @Nullable Animatable anim) {
+                    if (imageInfo == null) {
+                        return;
+                    }
+                    holder.draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+                }
+
+                @Override
+                public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+                    if (imageInfo == null) {
+                        return;
+                    }
+                    holder.draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+                }
+
+                @Override
+                public void onFailure(String id, Throwable throwable) {
+                    FLog.e(getClass(), throwable, "Error loading %s", id);
+                }
+            };
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setControllerListener(controllerListener)
+                    .setUri(uri)
+                    .build();
+            holder.draweeView.setController(controller);
 
             CardView cv = (CardView) holder.itemView.findViewById(R.id.card_view);
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(cv.getLayoutParams());
@@ -152,17 +194,19 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
-        ImageView imageView;
         Button moreButton;
         View itemView;
+        SimpleDraweeView draweeView;
 
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
             textView = (TextView) itemView.findViewById(R.id.text);
-            imageView = (ImageView) itemView.findViewById(R.id.image_view);
             if (viewType == HEADER || viewType == BANNER)
                 moreButton = (Button) itemView.findViewById(R.id.button);
+            if (viewType == ITEM_CARD) {
+                draweeView = (SimpleDraweeView) itemView.findViewById(R.id.image_view);
+            }
             this.itemView = itemView;
         }
     }

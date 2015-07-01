@@ -3,6 +3,7 @@ package com.nepotech.practicalanswers.our_resources_activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,14 +13,15 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.community.Community;
-import com.squareup.picasso.Picasso;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private Context mContext;
     private ArrayList<Community> mParentCommunities;
-    private HashMap<Community,ArrayList<Community>> mChildrenMap;
+    private HashMap<Community, ArrayList<Community>> mChildrenMap;
 
     private TextView groupDescription;
 
@@ -51,6 +53,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getChildView(int groupPosition, final int childPosition,
                              boolean isLastChild, View convertView, ViewGroup parent) {
+        //Fresco.initialize(mContext);
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -76,10 +79,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             iv_child.setPadding(0, 0, 0, 0);
         }
 
-        String imageurl_child = child.getImageurl();
+        String imageurl_child = URLDecoder.decode(child.getImageurl());
         Log.d("CHILD-IMAGEURL", imageurl_child);
-
-        Picasso.with(mContext).load(Global.baseUrl + URLDecoder.decode(imageurl_child)).into(iv_child);
+        Uri uri = Uri.parse(Global.baseUrl + imageurl_child.replace(" ", "%20"));
+        SimpleDraweeView draweeView = (SimpleDraweeView) convertView.findViewById(R.id.imageView1);
+        draweeView.setImageURI(uri);
         return convertView;
     }
 
@@ -111,10 +115,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
+        //Fresco.initialize(mContext);
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this.mContext
+            LayoutInflater inflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = inflater.inflate(R.layout.list_group, null);
         }
 
         Community headerCommunity = mParentCommunities.get(groupPosition);
@@ -125,7 +130,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
-        ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
+        //ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
         String imageurl = URLDecoder.decode(headerCommunity.getImageurl());
         //Log.d("GROUPPICURL", imageurl);
 
@@ -135,7 +140,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         groupDescription.setText(descriptionText);
 
         // Load image
-        Picasso.with(this.mContext).load(Global.baseUrl + imageurl).into(iv);
+        //Picasso.with(this.mContext).load(Global.baseUrl + imageurl).into(iv);
+        Uri uri = Uri.parse(Global.baseUrl + imageurl.replace(" ", "%20"));
+        SimpleDraweeView draweeView = (SimpleDraweeView) convertView.findViewById(R.id.imageView1);
+        draweeView.setImageURI(uri);
 
         return convertView;
     }

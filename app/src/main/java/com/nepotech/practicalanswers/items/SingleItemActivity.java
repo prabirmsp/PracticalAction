@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,9 +20,15 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
-import com.squareup.picasso.Picasso;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -43,7 +51,7 @@ public class SingleItemActivity extends AppCompatActivity {
     private TextView mYear;
     private TextView mType;
     private TextView mDescription;
-    private ImageView mThumb;
+    private SimpleDraweeView mThumb;
     private ImageView mTypeIcon;
     private TextView mDownloadTV;
     private ImageView mDownloadIV;
@@ -51,6 +59,7 @@ public class SingleItemActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fresco.initialize(this);
         setContentView(R.layout.activity_single_item);
 
         Intent thisIntent = getIntent();
@@ -65,7 +74,7 @@ public class SingleItemActivity extends AppCompatActivity {
 
         setTitle(title);
 
-        mThumb = (ImageView) findViewById(R.id.doc_thumb);
+        mThumb = (SimpleDraweeView) findViewById(R.id.doc_thumb);
         mTitle = (TextView) findViewById(R.id.title);
         mAuthor = (TextView) findViewById(R.id.author);
         mPublisher = (TextView) findViewById(R.id.publisher);
@@ -95,8 +104,44 @@ public class SingleItemActivity extends AppCompatActivity {
         mType.setText(mItem.getType() + " (" + size + " KB)");
         mDescription.setText(URLDecoder.decode(mItem.getDescription()));
 
-        Picasso.with(this).load(URLDecoder.decode(mItem.getDocumentThumbHref())).into(mThumb);
-        if (mItem.getType() == "application/pdf") {
+        // Picasso.with(this).load(URLDecoder.decode(mItem.getDocumentThumbHref())).into(mThumb);
+
+        // set document thumb imageview
+        String imgUrl = URLDecoder.decode(mItem.getDocumentThumbHref()).replace(" ", "%20");
+        Uri uri = Uri.parse(imgUrl);
+
+        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+            @Override
+            public void onFinalImageSet(
+                    String id,
+                    @Nullable ImageInfo imageInfo,
+                    @Nullable Animatable anim) {
+                if (imageInfo == null) {
+                    return;
+                }
+                mThumb.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+            }
+
+            @Override
+            public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
+                if (imageInfo == null) {
+                    return;
+                }
+                mThumb.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
+            }
+
+            @Override
+            public void onFailure(String id, Throwable throwable) {
+                FLog.e(getClass(), throwable, "Error loading %s", id);
+            }
+        };
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setControllerListener(controllerListener)
+                .setUri(uri)
+                .build();
+        mThumb.setController(controller);
+
+        if (mItem.getType().equals("application/pdf")) {
             mTypeIcon.setImageResource(R.drawable.ic_picture_as_pdf_black_48dp);
         } else {
             mTypeIcon.setImageResource(R.drawable.ic_insert_drive_file_black_48dp);
@@ -227,7 +272,7 @@ public class SingleItemActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.delete) {
-                deleteFile();
+            deleteFile();
             return true;
         }
 
