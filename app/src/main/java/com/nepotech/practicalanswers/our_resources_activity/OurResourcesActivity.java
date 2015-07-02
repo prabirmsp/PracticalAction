@@ -259,6 +259,9 @@ public class OurResourcesActivity extends AppCompatActivity {
             // get JSON data
             String jsonStr = "";
             try {
+                if (!ServiceHandler.isOnline(OurResourcesActivity.this)) {
+                    cancel(true);
+                }
                 jsonStr = ServiceHandler.getText(Global.url);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -29,6 +29,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
+import com.nepotech.practicalanswers.ServiceHandler;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -214,7 +215,7 @@ public class SingleItemActivity extends AppCompatActivity {
             }
         });
 
-    }
+    } // oncreate
 
     private void deleteFile() {
         new AlertDialog.Builder(SingleItemActivity.this)
@@ -305,6 +306,7 @@ public class SingleItemActivity extends AppCompatActivity {
             pDialog = new ProgressDialog(SingleItemActivity.this);
             pDialog.setTitle("Downloading File");
             pDialog.setMessage("Please wait...");
+            pDialog.setMax(Integer.parseInt(mItem.getDocumentSize()) / 1024);
             pDialog.setIndeterminate(false);
             pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pDialog.setCancelable(false);
@@ -319,6 +321,11 @@ public class SingleItemActivity extends AppCompatActivity {
                         }
                     });
             pDialog.show();
+            if (!ServiceHandler.isOnline(SingleItemActivity.this)) {
+                pDialog.dismiss();
+                noConnectivityDialog();
+                cancel(true);
+            }
         }
 
         /**
@@ -427,6 +434,13 @@ public class SingleItemActivity extends AppCompatActivity {
                     .setMessage("Please delete it and download it again.")
                     .setPositiveButton("OK", null).show();
         }
+    }
+
+    private void noConnectivityDialog() {
+
+        new AlertDialog.Builder(this).setTitle("No Connection")
+                .setMessage("Please connect to the internet and try again.")
+                .setPositiveButton("OK", null).show();
     }
 
     private void snackbar(String message) {

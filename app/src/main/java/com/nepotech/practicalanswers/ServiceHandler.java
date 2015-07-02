@@ -1,6 +1,8 @@
 package com.nepotech.practicalanswers;
 
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.http.AndroidHttpClient;
 
 import org.apache.http.HttpEntity;
@@ -40,5 +42,13 @@ public class ServiceHandler {
         in.close();
 
         return response.toString();
+    }
+
+    public static boolean isOnline(Context context) {
+        ConnectivityManager cm =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 }

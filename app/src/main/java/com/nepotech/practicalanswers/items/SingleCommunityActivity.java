@@ -3,6 +3,7 @@ package com.nepotech.practicalanswers.items;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -28,6 +29,7 @@ import com.nepotech.practicalanswers.ServiceHandler;
 import com.nepotech.practicalanswers.community.Community;
 import com.nepotech.practicalanswers.community.CommunityDBHelper;
 import com.nepotech.practicalanswers.community.CommunityDataSource;
+import com.nepotech.practicalanswers.home_activity.HomeActivity;
 import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
 
 import org.json.JSONArray;
@@ -108,7 +110,9 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mSwipeRefresh.setRefreshing(true);
         mFab.setClickable(false);
 
-        mLangFilter = LANG_ALL;
+        SharedPreferences langPrefs = getSharedPreferences(HomeActivity.LANG_PREFS_NAME, 0);
+        mLangFilter = langPrefs.getString(HomeActivity.KEY_LANGUAGE, LANG_ALL);
+        snackbar(mLangFilter);
         if (getItemsFromDB(mLangFilter) != 0)
             new GetItems().execute();
         else {
@@ -125,7 +129,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
     }
 
     private void setupFilterDialog() {
-        /** Set up dialog for filter **/
+        /** Set up dialog for filter **
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.filter_dialog);
         dialog.setTitle("Select Filter");
@@ -166,7 +170,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
                 dialog.show();
             }
         });
-        mItemsDataSource.close();
+        mItemsDataSource.close(); **/
     }
 
     // Get items list from database
@@ -231,6 +235,8 @@ public class SingleCommunityActivity extends AppCompatActivity {
             // get JSON data
             String jsonStr = "";
             try {
+                if(!ServiceHandler.isOnline(SingleCommunityActivity.this))
+                    cancel(true);
                 jsonStr = ServiceHandler.getText(Global.url + "?get_items_from_dspace_id=" +
                         mCommunity.getDspace_id());
             } catch (Exception e) {

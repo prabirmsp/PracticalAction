@@ -1,8 +1,10 @@
 package com.nepotech.practicalanswers.home_activity;
 
+import android.app.Dialog;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,9 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nepotech.practicalanswers.R;
@@ -26,7 +31,12 @@ public class HomeActivity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     ArrayList<HomeRecyclerItem> mContent;
-    ItemsDataSource mItemsSource;
+    ItemsDataSource mItemsDataSource;
+    private String mLangFilter;
+    public static final String LANG_ALL = "All";
+    public static final String LANG_PREFS_NAME = "LanguagePrefs";
+    public static final String KEY_LANGUAGE = "language";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +64,9 @@ public class HomeActivity extends AppCompatActivity {
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
+        SharedPreferences langSettings = getSharedPreferences(LANG_PREFS_NAME, 0);
+        mLangFilter = langSettings.getString(KEY_LANGUAGE, LANG_ALL);
+
     }
 
     @Override
@@ -65,15 +78,15 @@ public class HomeActivity extends AppCompatActivity {
         mContent = new ArrayList<>();
         // add banner
         mContent.add(new HomeRecyclerItem(HomeRecyclerItem.BANNER, 0, true));
-        mItemsSource = new ItemsDataSource(this);
-        mItemsSource.open();
+        mItemsDataSource = new ItemsDataSource(this);
+        mItemsDataSource.open();
 
         // add starred header
         mContent.add(new HomeRecyclerItem(
                 HomeRecyclerItem.HEADER, "Starred Items",
                 new Intent(HomeActivity.this, Starred.class)));
         // add starred content
-        arrayList = mItemsSource.getAllStarred();
+        arrayList = mItemsDataSource.getAllStarred();
         for (int i = 0; i < 3; i++) {
             if (i < arrayList.size()) {
                 Item item = arrayList.get(i);
@@ -89,7 +102,7 @@ public class HomeActivity extends AppCompatActivity {
                 HomeRecyclerItem.HEADER, "Downloaded Files",
                 new Intent(HomeActivity.this, Downloaded.class)));
         // add downloaded content
-        arrayList = mItemsSource.getAllDownloaded();
+        arrayList = mItemsDataSource.getAllDownloaded();
         for (int i = 0; i < 3; i++) {
             if (i < arrayList.size()) {
                 Item item = arrayList.get(i);
@@ -99,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
             } else
                 mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
         }
-        mItemsSource.close();
+        mItemsDataSource.close();
 
         HomeRecyclerAdapter adapter = new HomeRecyclerAdapter(this, mContent);
         mRecyclerView.setAdapter(adapter);
@@ -128,13 +141,52 @@ public class HomeActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-
+        if (id == R.id.filter) {
+            showFilterDialog();
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFilterDialog() {
+        /** Set up dialog for filter **/
+        final Dialog dialog = new Dialog(this);
+        dialog.setContentView(R.layout.filter_dialog);
+        dialog.setTitle("Select Filter");
+        Spinner lang_spinner = (Spinner) dialog.findViewById(R.id.spinner_lang);
+        mItemsDataSource.open();
+        final ArrayList<String> langList = mItemsDataSource.getAllLanguages();
+        langList.add(0, LANG_ALL); // add All to beginning
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_list_item_1, langList);
+        lang_spinner.setAdapter(adapter);
+        lang_spinner.setSelection(langList.indexOf(mLangFilter));
+        lang_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            boolean firstSelect = true;
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (firstSelect) {
+                    firstSelect = false;
+                    return;
+                }
+                mLangFilter = langList.get(position);
+                SharedPreferences langPrefs = getSharedPreferences(LANG_PREFS_NAME, 0);
+                SharedPreferences.Editor editor = langPrefs.edit();
+                editor.putString(KEY_LANGUAGE, mLangFilter);
+                editor.apply();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                mLangFilter = LANG_ALL;
+            }
+        });
+        mItemsDataSource.close();
+        dialog.show();
     }
 
     public void resources(View view) {
