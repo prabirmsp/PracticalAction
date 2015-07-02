@@ -10,14 +10,8 @@
 
         <TextView
             android:id="@+id/fillerTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="100dp"
             android:text="Nothing to see here!"
-            android:textColor="#BBBBBB"
-            android:textSize="20sp"
-            android:visibility="invisible" />
+            style="@style/backgroundText" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"

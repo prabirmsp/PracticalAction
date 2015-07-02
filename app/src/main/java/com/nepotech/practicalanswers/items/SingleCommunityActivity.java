@@ -20,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nepotech.practicalanswers.Global;
@@ -52,7 +54,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mListViewAdapter;
     SwipeRefreshLayout mSwipeRefresh;
-    FloatingActionButton mFab;
+    LinearLayout mLinearLayoutNoDocs;
 
     // JSON Nodes
     private static final String TAG_ITEMS = "community_items"; // wrapper object name
@@ -79,8 +81,8 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
         // get from xml
         mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
-        mFab = (FloatingActionButton) findViewById(R.id.fab);
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mLinearLayoutNoDocs = (LinearLayout) findViewById(R.id.ll_docs_not_found);
 
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
         // fix setRefreshing(true)
@@ -108,11 +110,18 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mItemsDataSource = new ItemsDataSource(this);
 
         mSwipeRefresh.setRefreshing(true);
-        mFab.setClickable(false);
 
         SharedPreferences langPrefs = getSharedPreferences(HomeActivity.LANG_PREFS_NAME, 0);
         mLangFilter = langPrefs.getString(HomeActivity.KEY_LANGUAGE, LANG_ALL);
-        snackbar(mLangFilter);
+
+        mLinearLayoutNoDocs.setVisibility(View.INVISIBLE);
+        findViewById(R.id.button_change_lang).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFilterDialog();
+            }
+        });
+
         if (getItemsFromDB(mLangFilter) != 0)
             new GetItems().execute();
         else {
@@ -128,11 +137,12 @@ public class SingleCommunityActivity extends AppCompatActivity {
         });
     }
 
-    private void setupFilterDialog() {
-        /** Set up dialog for filter **
+    private void showFilterDialog() {
+        /** Set up dialog for filter **/
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.filter_dialog);
-        dialog.setTitle("Select Filter");
+        dialog.setTitle("Select Document Filter");
+        ((TextView) dialog.findViewById(R.id.language)).setText("Languages\nin this Category");
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
@@ -156,6 +166,11 @@ public class SingleCommunityActivity extends AppCompatActivity {
                     return;
                 }
                 mLangFilter = langList.get(position);
+                SharedPreferences langPrefs = getSharedPreferences(HomeActivity.LANG_PREFS_NAME, 0);
+                SharedPreferences.Editor editor = langPrefs.edit();
+                editor.putString(HomeActivity.KEY_LANGUAGE, mLangFilter);
+                editor.apply();
+                mLinearLayoutNoDocs.setVisibility(View.INVISIBLE);
                 dialog.dismiss();
             }
             @Override
@@ -163,19 +178,12 @@ public class SingleCommunityActivity extends AppCompatActivity {
                 mLangFilter = LANG_ALL;
             }
         });
-
-        mFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.show();
-            }
-        });
-        mItemsDataSource.close(); **/
+        mItemsDataSource.close();
+        dialog.show();
     }
 
     // Get items list from database
     private int getItemsFromDB(String lang) {
-        mFab.setClickable(true);
         String langQuery = ItemsDBHelper.COLUMN_LANGUAGE + " = '" + lang + "'";
         if (lang.equals(LANG_ALL))
             langQuery = null;
@@ -183,6 +191,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mItems = new ArrayList<>();
         ArrayList<Item> temp = mItemsDataSource.getItemsFromCollection(mCommunity.getDspace_id(),
                 langQuery);
+        mItemsDataSource.close();
         if (!temp.isEmpty()) { // Data found in DB
             Log.d("SingleComm.getMapFromDB", "Data Found!!!");
             mItems = temp;
@@ -191,11 +200,10 @@ public class SingleCommunityActivity extends AppCompatActivity {
             mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunityActivity.this, mItems, mWindowTitle);
             // setting list adapter
             mRecyclerView.setAdapter(mListViewAdapter);
-            setupFilterDialog();
             return 0;
         } else { // Data not found in DB
-            mItemsDataSource.close();
             Log.d("Main.getMapFromDB", "Data not found in DB");
+            mLinearLayoutNoDocs.setVisibility(View.VISIBLE);
             return 1;
         }
     }

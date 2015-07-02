@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -161,7 +162,7 @@ public class SingleItemActivity extends AppCompatActivity {
         }
 
         if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id)) {
-            mDownloadTV.setText("Downloaded");
+            mDownloadTV.setText("Open");
             mDownloadIV.setImageResource(R.drawable.ic_offline_pin_black_48dp);
         } else {
             mDownloadTV.setText("Download");
@@ -214,6 +215,16 @@ public class SingleItemActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(intent, "Share via"));
             }
         });
+
+        // Bottom toolbar
+        Toolbar bottomToolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
+        bottomToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+        bottomToolbar.inflateMenu(R.menu.menu_item_options);
 
     } // oncreate
 
@@ -404,7 +415,7 @@ public class SingleItemActivity extends AppCompatActivity {
                         }
                     })
                     .show();
-            mDownloadTV.setText("Downloaded");
+            mDownloadTV.setText("Open");
             mDownloadIV.setImageResource(R.drawable.ic_offline_pin_black_48dp);
 
 

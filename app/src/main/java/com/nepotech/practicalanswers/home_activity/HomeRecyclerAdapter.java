@@ -120,7 +120,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             // set document thumb imageview
             Uri uri = Uri.parse(URLDecoder.decode(item.imageHref).replace(" ", "%20"));
 
-            ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+            ControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
                 @Override
                 public void onFinalImageSet(
                         String id,
@@ -183,7 +183,6 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
     private int dp_px(int dp, DisplayMetrics displayMetrics) {
         float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, displayMetrics);
-        Log.d("PIXELS", "" + pixels);
         return Math.round(pixels);
     }
 

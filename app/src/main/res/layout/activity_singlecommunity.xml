@@ -7,30 +7,46 @@
 
 
     <!-- Your scrollable content here -->
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="match_parent">
 
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/items_list"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:drawSelectorOnTop="true" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="24dp"
-        android:src="@drawable/ic_filter_list_white_48dp"
-        app:backgroundTint="@color/pink_highlight"
-        app:elevation="10dp">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/items_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:drawSelectorOnTop="true" />
 
-    </android.support.design.widget.FloatingActionButton>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_docs_not_found"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:visibility="invisible">
+            <TextView
+                android:text="No documents were found."
+                style="@style/backgroundText"
+                android:visibility="visible"/>
+            <Button
+                android:id="@+id/button_change_lang"
+                android:text="Change language filter"
+                android:textColor="@color/text_white"
+                android:background="@drawable/button"
+                android:layout_marginTop="24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"/>
+        </LinearLayout>
+    </FrameLayout>
 </android.support.design.widget.CoordinatorLayout>

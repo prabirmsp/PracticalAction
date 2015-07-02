@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/star"
+        android:icon="@drawable/ic_star_border_black_48dp"
+        android:title="Star"
+        app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:id="@+id/download"
+        android:icon="@drawable/ic_file_download_black_48dp"
+        android:title="Download"
+        app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:id="@+id/share"
+        android:icon="@drawable/ic_share_black_48dp"
+        android:title="Share"
+        app:showAsAction="collapseActionView|ifRoom" />
+    <item
+        android:id="@+id/preview"
+        android:title="Preview"
+        app:showAsAction="collapseActionView|ifRoom" />
+</menu>

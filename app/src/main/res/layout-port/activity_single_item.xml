@@ -206,4 +206,11 @@
 
     </LinearLayout>
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_bottom"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="?attr/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:minHeight="?attr/actionBarSize" />
 </RelativeLayout>

@@ -30,6 +30,7 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
+    HomeRecyclerAdapter mRecyclerAdapter;
     ArrayList<HomeRecyclerItem> mContent;
     ItemsDataSource mItemsDataSource;
     private String mLangFilter;
@@ -72,50 +73,13 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        ArrayList<Item> arrayList;
 
         /** Add content **/
-        mContent = new ArrayList<>();
+        mContent = getDataFromDB();
         // add banner
-        mContent.add(new HomeRecyclerItem(HomeRecyclerItem.BANNER, 0, true));
-        mItemsDataSource = new ItemsDataSource(this);
-        mItemsDataSource.open();
 
-        // add starred header
-        mContent.add(new HomeRecyclerItem(
-                HomeRecyclerItem.HEADER, "Starred Items",
-                new Intent(HomeActivity.this, Starred.class)));
-        // add starred content
-        arrayList = mItemsDataSource.getAllStarred();
-        for (int i = 0; i < 3; i++) {
-            if (i < arrayList.size()) {
-                Item item = arrayList.get(i);
-                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
-                        "Starred", item.getDspaceId(), i + 1, true));
-            } else
-                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
-        }
-
-        // add downloaded header
-        mContent.add(new HomeRecyclerItem(
-                HomeRecyclerItem.HEADER, "Downloaded Files",
-                new Intent(HomeActivity.this, Downloaded.class)));
-        // add downloaded content
-        arrayList = mItemsDataSource.getAllDownloaded();
-        for (int i = 0; i < 3; i++) {
-            if (i < arrayList.size()) {
-                Item item = arrayList.get(i);
-                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
-                        "Downloaded", item.getDspaceId(), i + 1, true));
-            } else
-                mContent.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
-        }
-        mItemsDataSource.close();
-
-        HomeRecyclerAdapter adapter = new HomeRecyclerAdapter(this, mContent);
-        mRecyclerView.setAdapter(adapter);
+        mRecyclerAdapter = new HomeRecyclerAdapter(this, mContent);
+        mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
     @Override
@@ -148,6 +112,48 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private ArrayList<HomeRecyclerItem> getDataFromDB () {
+        ArrayList<HomeRecyclerItem> content = new ArrayList<>();
+        content.add(new HomeRecyclerItem(HomeRecyclerItem.BANNER, 0, true));
+        mItemsDataSource = new ItemsDataSource(this);
+        mItemsDataSource.open();
+
+        ArrayList<Item> arrayList;
+        // add starred header
+        content.add(new HomeRecyclerItem(
+                HomeRecyclerItem.HEADER, "Starred Items",
+                new Intent(HomeActivity.this, Starred.class)));
+        // add starred content
+        arrayList = mItemsDataSource.getAllStarred();
+        for (int i = 0; i < 3; i++) {
+            if (i < arrayList.size()) {
+                Item item = arrayList.get(i);
+                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
+                        "Starred", item.getDspaceId(), i + 1, true));
+            } else
+                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+        }
+
+        // add downloaded header
+        content.add(new HomeRecyclerItem(
+                HomeRecyclerItem.HEADER, "Downloaded Files",
+                new Intent(HomeActivity.this, Downloaded.class)));
+        // add downloaded content
+        arrayList = mItemsDataSource.getAllDownloaded();
+        for (int i = 0; i < 3; i++) {
+            if (i < arrayList.size()) {
+                Item item = arrayList.get(i);
+                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
+                        "Downloaded", item.getDspaceId(), i + 1, true));
+            } else
+                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+        }
+        mItemsDataSource.close();
+        return content;
     }
 
     private void showFilterDialog() {
