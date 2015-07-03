@@ -131,7 +131,7 @@ public class HomeActivity extends AppCompatActivity {
             if (i < arrayList.size()) {
                 Item item = arrayList.get(i);
                 content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
+                        item.getTitle(), item.getDocumentThumbHref(),
                         "Starred", item.getDspaceId(), i + 1, true));
             } else
                 content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
@@ -147,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
             if (i < arrayList.size()) {
                 Item item = arrayList.get(i);
                 content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        URLDecoder.decode(item.getTitle()), item.getDocumentThumbHref(),
+                        item.getTitle(), item.getDocumentThumbHref(),
                         "Downloaded", item.getDspaceId(), i + 1, true));
             } else
                 content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));

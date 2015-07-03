@@ -32,7 +32,6 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DOCUMENT_HREF = "document_href";
     public static final String COLUMN_DOCUMENT_SIZE = "document_size";
     public static final String COLUMN_FILENAME = "local_file_name";
-    public static final String COLUMN_TIMESTAMP = "timestamp";
 
     // Table create SQL Statement
     private static final String CREATE_TABLE_COMMUNITY =

@@ -29,6 +29,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.nepotech.practicalanswers.Global;
+import com.nepotech.practicalanswers.PDFViewActivity;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.ServiceHandler;
 
@@ -39,22 +40,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
 
 public class SingleItemActivity extends AppCompatActivity {
 
     private Item mItem;
     private ItemsDataSource mDataSource;
+    public static final String KEY_EXTRA_LINK = "document_href";
 
-    private TextView mTitle;
-    private TextView mAuthor;
-    private TextView mPublisher;
-    private TextView mLanguage;
-    private TextView mYear;
-    private TextView mType;
-    private TextView mDescription;
     private SimpleDraweeView mThumb;
-    private ImageView mTypeIcon;
     private TextView mDownloadTV;
     private ImageView mDownloadIV;
 
@@ -77,14 +70,14 @@ public class SingleItemActivity extends AppCompatActivity {
         setTitle(title);
 
         mThumb = (SimpleDraweeView) findViewById(R.id.doc_thumb);
-        mTitle = (TextView) findViewById(R.id.title);
-        mAuthor = (TextView) findViewById(R.id.author);
-        mPublisher = (TextView) findViewById(R.id.publisher);
-        mLanguage = (TextView) findViewById(R.id.language);
-        mYear = (TextView) findViewById(R.id.date);
-        mType = (TextView) findViewById(R.id.type);
-        mDescription = (TextView) findViewById(R.id.item_description);
-        mTypeIcon = (ImageView) findViewById(R.id.type_icon);
+        TextView mTitle = (TextView) findViewById(R.id.title);
+        TextView mAuthor = (TextView) findViewById(R.id.author);
+        TextView mPublisher = (TextView) findViewById(R.id.publisher);
+        TextView mLanguage = (TextView) findViewById(R.id.language);
+        TextView mYear = (TextView) findViewById(R.id.date);
+        TextView mType = (TextView) findViewById(R.id.type);
+        TextView mDescription = (TextView) findViewById(R.id.item_description);
+        ImageView mTypeIcon = (ImageView) findViewById(R.id.type_icon);
 
         LinearLayout share_ll = (LinearLayout) findViewById(R.id.share_ll);
 
@@ -96,23 +89,23 @@ public class SingleItemActivity extends AppCompatActivity {
         final ImageView star_iv = (ImageView) findViewById(R.id.image_star);
         LinearLayout star_ll = (LinearLayout) findViewById(R.id.star_ll);
 
-        mTitle.setText(URLDecoder.decode(mItem.getTitle()));
-        mAuthor.setText(URLDecoder.decode(mItem.getCreator()));
-        mPublisher.setText(URLDecoder.decode(mItem.getPublisher()));
+        mTitle.setText(mItem.getTitle());
+        mAuthor.setText(mItem.getCreator());
+        mPublisher.setText(mItem.getPublisher());
         mLanguage.setText(mItem.getLanguage());
         mYear.setText(mItem.getDateIssued());
         double size = (double) Math.round(
                 (double) Integer.parseInt(mItem.getDocumentSize()) / 102.4) / 10.0;
         mType.setText(mItem.getType() + " (" + size + " KB)");
-        mDescription.setText(URLDecoder.decode(mItem.getDescription()));
+        mDescription.setText(mItem.getDescription());
 
         // Picasso.with(this).load(URLDecoder.decode(mItem.getDocumentThumbHref())).into(mThumb);
 
         // set document thumb imageview
-        String imgUrl = URLDecoder.decode(mItem.getDocumentThumbHref()).replace(" ", "%20");
+        String imgUrl = mItem.getDocumentThumbHref();
         Uri uri = Uri.parse(imgUrl);
 
-        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+        ControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onFinalImageSet(
                     String id,
@@ -143,6 +136,7 @@ public class SingleItemActivity extends AppCompatActivity {
                 .build();
         mThumb.setController(controller);
 
+
         if (mItem.getType().equals("application/pdf")) {
             mTypeIcon.setImageResource(R.drawable.ic_picture_as_pdf_black_48dp);
         } else {
@@ -150,9 +144,27 @@ public class SingleItemActivity extends AppCompatActivity {
         }
 
 
+        // Bottom toolbar
+        Toolbar bottomToolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
+        bottomToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+
         mDataSource = new ItemsDataSource(this);
         mDataSource.open();
 
+        mThumb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id))
+                    openFile();
+                else
+                    openWebPreview();
+            }
+        });
         if (mDataSource.isPresent(ItemsDBHelper.TABLE_STARRED, dspace_id)) {
             star_tv.setText("Starred");
             star_iv.setImageResource(R.drawable.ic_star_black_48dp);
@@ -188,9 +200,10 @@ public class SingleItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id)) {
-                    openFile(mDataSource.getFileName(dspace_id));
+                    openFile();
+
                 } else
-                    new DownloadFileFromURL().execute(URLDecoder.decode(mItem.getDocumentHref()));
+                    new DownloadFileFromURL().execute(mItem.getDocumentHref());
 
             }
         });
@@ -209,22 +222,12 @@ public class SingleItemActivity extends AppCompatActivity {
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Practical Action");
-                intent.putExtra(Intent.EXTRA_TEXT, URLDecoder.decode(mItem.getTitle()) +
+                intent.putExtra(Intent.EXTRA_TEXT, mItem.getTitle() +
                         "\nFind out more at: " +
-                        URLDecoder.decode(mItem.getDocumentHref()));
+                        mItem.getDocumentHref());
                 startActivity(Intent.createChooser(intent, "Share via"));
             }
         });
-
-        // Bottom toolbar
-        Toolbar bottomToolbar = (Toolbar) findViewById(R.id.toolbar_bottom);
-        bottomToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return false;
-            }
-        });
-        bottomToolbar.inflateMenu(R.menu.menu_item_options);
 
     } // oncreate
 
@@ -272,6 +275,8 @@ public class SingleItemActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, mItem.getDspaceId()))
             getMenuInflater().inflate(R.menu.menu_main, menu);
+        else
+            getMenuInflater().inflate(R.menu.menu_preview, menu);
         return true;
     }
 
@@ -286,9 +291,26 @@ public class SingleItemActivity extends AppCompatActivity {
         if (id == R.id.delete) {
             deleteFile();
             return true;
+        } else if (id == R.id.preview) {
+            openWebPreview();
+
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void openWebPreview() {
+        if (ServiceHandler.isOnline(this)) {
+            Intent intent = new Intent(this, WebPreview.class);
+            intent.putExtra(KEY_EXTRA_LINK, mItem.getDocumentHref());
+            startActivity(intent);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle("Not Connected")
+                    .setMessage("Connect to the internet to get a preview of the document.")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
     }
 
 
@@ -411,7 +433,7 @@ public class SingleItemActivity extends AppCompatActivity {
                     .setAction("OPEN", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            openFile(fileName);
+                            openFile();
                         }
                     })
                     .show();
@@ -432,16 +454,18 @@ public class SingleItemActivity extends AppCompatActivity {
         }
     }
 
-    private void openFile(String fileName) {
-        File file = new File(Global.ExtFolderPath + fileName);
-        if (file.exists()) {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), mItem.getType());
-            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-            startActivity(intent);
+    private void openFile() {
+        String filePath = Global.ExtFolderPath + mDataSource.getFileName(mItem.getDspaceId());
+        if (new File(filePath).exists()) {
+            if (mItem.getType().equals("application/pdf")) {
+                Intent intent = new Intent(SingleItemActivity.this, PDFViewActivity.class);
+                intent.putExtra(PDFViewActivity.KEY_FILENAME, mDataSource.getFileName(mItem.getDspaceId()));
+                intent.putExtra(PDFViewActivity.KEY_TYPE, mItem.getType());
+                startActivity(intent);
+            } else
+                snackbar("File is not PDF.");
         } else {
-            new AlertDialog.Builder(this).setTitle("The file does not exist!")
+            new AlertDialog.Builder(SingleItemActivity.this).setTitle("The file does not exist!")
                     .setMessage("Please delete it and download it again.")
                     .setPositiveButton("OK", null).show();
         }

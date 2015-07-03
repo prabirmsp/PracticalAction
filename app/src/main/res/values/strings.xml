@@ -11,4 +11,9 @@
     <string name="title_activity_search_results">SearchResultsActivity</string>
     <string name="title_activity_community_details">CommunityDetailsActivity</string>
 
+    <string name="title_activity_web_preview">WebPreview</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_pdfview">PDFViewActivity</string>
+
 </resources>

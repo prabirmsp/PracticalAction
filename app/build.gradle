@@ -28,4 +28,5 @@ dependencies {
     compile 'com.facebook.fresco:fresco:0.5.3+'
     compile 'com.makeramen:roundedimageview:2.1.0'
     compile 'com.github.nirhart:parallaxscroll:1.0'
+    compile 'com.joanzapata.pdfview:android-pdfview:1.0.4@aar'
 }

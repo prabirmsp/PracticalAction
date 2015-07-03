@@ -1,6 +1,7 @@
 package com.nepotech.practicalanswers.our_resources_activity;
 
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
@@ -37,6 +38,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -58,7 +61,6 @@ public class OurResourcesActivity extends AppCompatActivity {
     private static final String TAG_IMAGEURL = "imageurl";
     protected ArrayList<Community> mParentCommunities;
     protected HashMap<Community, ArrayList<Community>> mChildrenMap;
-    private ExpandableListAdapter mExpandableListAdapter;
     private ExpandableListView mExpandableListView;
     private TextView mTVNull;
     private SwipeRefreshLayout mSwipeRefresh;
@@ -143,12 +145,19 @@ public class OurResourcesActivity extends AppCompatActivity {
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
                 Community comm = mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition);
-                int rgt = Integer.parseInt(comm.getRgt());
-                int lft = Integer.parseInt(comm.getLft());
-                boolean val = (Integer.parseInt(comm.getRgt()) - Integer.parseInt(comm.getLft())) > 1;
                 if ((Integer.parseInt(comm.getRgt()) - Integer.parseInt(comm.getLft())) > 1) {
                     // child community contains sub communities
                     snackbar("subbchic");
+
+
+
+
+
+
+
+
+
+
 
                 } else {
 
@@ -191,9 +200,9 @@ public class OurResourcesActivity extends AppCompatActivity {
             }
             mDataSource.close();
             // setting adapter
-            mExpandableListAdapter = new ExpandableListAdapter(OurResourcesActivity.this, mParentCommunities, mChildrenMap);
+            ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(OurResourcesActivity.this, mParentCommunities, mChildrenMap);
             // setting list adapter
-            mExpandableListView.setAdapter(mExpandableListAdapter);
+            mExpandableListView.setAdapter(expandableListAdapter);
             mTVNull.setVisibility(View.INVISIBLE);
             return 0;
         } else { // Data not found in DB
@@ -208,6 +217,7 @@ public class OurResourcesActivity extends AppCompatActivity {
         new GetCommunities().execute();
     }
 
+    @TargetApi(11)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -290,26 +300,29 @@ public class OurResourcesActivity extends AppCompatActivity {
 
                 for (int i = 0; i < length; i++) {
                     JSONObject jsonCommunity = communities.getJSONObject(i);
+                    try {
+                        String id = jsonCommunity.getString(TAG_ID); // id from server (not used)
+                        String dspace_id = jsonCommunity.getString(TAG_DSPACE_ID);
+                        String parent_id = jsonCommunity.getString(TAG_PARENT_ID);
+                        String rgt = jsonCommunity.getString(TAG_RGT);
+                        String lft = jsonCommunity.getString(TAG_LFT);
+                        String level = jsonCommunity.getString(TAG_LEVEL);
+                        String title = URLDecoder.decode(jsonCommunity.getString(TAG_TITLE), Global.CHARSET);
+                        String description = URLDecoder.decode(jsonCommunity.getString(TAG_DESCRIPTION), Global.CHARSET);
+                        String alias = jsonCommunity.getString(TAG_ALIAS);
+                        String imageurl = URLDecoder.decode(jsonCommunity.getString(TAG_IMAGEURL), Global.CHARSET).replace(" ", "%20");
 
-                    String id = jsonCommunity.getString(TAG_ID); // id from server (not used)
-                    String dspace_id = jsonCommunity.getString(TAG_DSPACE_ID);
-                    String parent_id = jsonCommunity.getString(TAG_PARENT_ID);
-                    String rgt = jsonCommunity.getString(TAG_RGT);
-                    String lft = jsonCommunity.getString(TAG_LFT);
-                    String level = jsonCommunity.getString(TAG_LEVEL);
-                    String title = jsonCommunity.getString(TAG_TITLE);
-                    String description = jsonCommunity.getString(TAG_DESCRIPTION);
-                    String alias = jsonCommunity.getString(TAG_ALIAS);
-                    String imageurl = jsonCommunity.getString(TAG_IMAGEURL);
-
-                    if (Integer.parseInt(level) == min) { // if parent group
-                        mDataSource.createCommunity(
-                                CommunityDBHelper.TABLE_COMMUNITY, dspace_id, parent_id, rgt, lft,
-                                level, title, description, alias, imageurl);
-                    } else { // if child
-                        mDataSource.createCommunity(
-                                CommunityDBHelper.TABLE_CHILD_COMMUNITY, dspace_id, parent_id, rgt, lft,
-                                level, title, description, alias, imageurl);
+                        if (Integer.parseInt(level) == min) { // if parent group
+                            mDataSource.createCommunity(
+                                    CommunityDBHelper.TABLE_COMMUNITY, dspace_id, parent_id, rgt, lft,
+                                    level, title, description, alias, imageurl);
+                        } else { // if child
+                            mDataSource.createCommunity(
+                                    CommunityDBHelper.TABLE_CHILD_COMMUNITY, dspace_id, parent_id, rgt, lft,
+                                    level, title, description, alias, imageurl);
+                        }
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
                 }
             } catch (JSONException e) {

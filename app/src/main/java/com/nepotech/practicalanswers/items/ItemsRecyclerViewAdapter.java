@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.common.logging.FLog;
@@ -21,7 +20,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
 import com.nepotech.practicalanswers.R;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecyclerViewAdapter.ViewHolder> {
@@ -68,13 +66,13 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
             }
         });
         // set textviews
-        viewHolder.txtDesc.setText(URLDecoder.decode(rowItem.getDescription()));
-        viewHolder.txtTitle.setText(URLDecoder.decode(rowItem.getTitle()));
-        String imageUrl = URLDecoder.decode(rowItem.getDocumentThumbHref());
+        viewHolder.txtDesc.setText(rowItem.getDescription());
+        viewHolder.txtTitle.setText(rowItem.getTitle());
+        String imageUrl = rowItem.getDocumentThumbHref();
 
         // set document thumb imageview
-        Uri uri = Uri.parse(imageUrl.replace(" ", "%20"));
-        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+        Uri uri = Uri.parse(imageUrl);
+        ControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onFinalImageSet(
                     String id,
@@ -88,9 +86,9 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
 
             @Override
             public void onIntermediateImageSet(String id, @Nullable ImageInfo imageInfo) {
-                    if (imageInfo == null) {
-                        return;
-                    }
+                if (imageInfo == null) {
+                    return;
+                }
                 viewHolder.draweeView.setAspectRatio((float) imageInfo.getWidth() / imageInfo.getHeight());
             }
 

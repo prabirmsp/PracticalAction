@@ -9,7 +9,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.nepotech.practicalanswers.items.ItemsDBHelper;
 import com.nepotech.practicalanswers.items.SingleItemActivity;
 import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ViewHolder> {
@@ -118,7 +116,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             holder.textView.setEllipsize(TextUtils.TruncateAt.END);
 
             // set document thumb imageview
-            Uri uri = Uri.parse(URLDecoder.decode(item.imageHref).replace(" ", "%20"));
+            Uri uri = Uri.parse(item.imageHref);
 
             ControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
                 @Override

@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.nepotech.practicalanswers.PDFViewActivity">
+    <item
+        android:id="@+id/go_to_page"
+        android:orderInCategory="100"
+        android:title="Go to page..."
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/open_in"
+        android:orderInCategory="100"
+        android:title="Open in..."
+        app:showAsAction="never" />
+</menu>

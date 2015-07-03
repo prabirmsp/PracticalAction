@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
@@ -38,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 
@@ -104,7 +104,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mCommunity = dataSource.getFromDspaceId(tableForCommunity, dspace_id);
         dataSource.close();
 
-        mWindowTitle = URLDecoder.decode(mCommunity.getTitle());
+        mWindowTitle = mCommunity.getTitle();
         setTitle(mWindowTitle);
 
         mItemsDataSource = new ItemsDataSource(this);
@@ -122,9 +122,10 @@ public class SingleCommunityActivity extends AppCompatActivity {
             }
         });
 
-        if (getItemsFromDB(mLangFilter) != 0)
+        if (getItemsFromDB(mLangFilter) != 0) {
+            mLinearLayoutNoDocs.setVisibility(View.INVISIBLE);
             new GetItems().execute();
-        else {
+        } else {
             // snackbar("Data Received from DB!");
             mSwipeRefresh.setRefreshing(false);
         }
@@ -152,13 +153,15 @@ public class SingleCommunityActivity extends AppCompatActivity {
         Spinner lang_spinner = (Spinner) dialog.findViewById(R.id.spinner_lang);
         mItemsDataSource.open();
         final ArrayList<String> langList = mItemsDataSource.getLanguagesInCollection(mCommunity.getDspace_id());
-        langList.add(0, LANG_ALL); // add All to beginning
+        langList.add(0, "Select..."); // add All to beginning
+        langList.add(1, LANG_ALL); // add All to beginning
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1, langList);
         lang_spinner.setAdapter(adapter);
         lang_spinner.setSelection(langList.indexOf(mLangFilter));
         lang_spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             boolean firstSelect = true;
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (firstSelect) {
@@ -173,6 +176,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
                 mLinearLayoutNoDocs.setVisibility(View.INVISIBLE);
                 dialog.dismiss();
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 mLangFilter = LANG_ALL;
@@ -243,7 +247,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
             // get JSON data
             String jsonStr = "";
             try {
-                if(!ServiceHandler.isOnline(SingleCommunityActivity.this))
+                if (!ServiceHandler.isOnline(SingleCommunityActivity.this))
                     cancel(true);
                 jsonStr = ServiceHandler.getText(Global.url + "?get_items_from_dspace_id=" +
                         mCommunity.getDspace_id());
@@ -269,16 +273,16 @@ public class SingleCommunityActivity extends AppCompatActivity {
                     //String collection_id = jsonItem.getString(TAG_COLLECTION_ID);
                     String collection_id = mCommunity.getDspace_id();
                     String dspace_id = jsonItem.getString(TAG_DSPACE_ID);
-                    String creator = jsonItem.getString(TAG_CREATOR);
-                    String publisher = jsonItem.getString(TAG_PUBLISHER);
+                    String creator = URLDecoder.decode(jsonItem.getString(TAG_CREATOR), Global.CHARSET);
+                    String publisher = URLDecoder.decode(jsonItem.getString(TAG_PUBLISHER), Global.CHARSET);
                     String language = jsonItem.getString(TAG_LANGUAGE);
-                    String title = jsonItem.getString(TAG_TITLE);
-                    String description = jsonItem.getString(TAG_DESCRIPTION);
+                    String title = URLDecoder.decode(jsonItem.getString(TAG_TITLE), Global.CHARSET);
+                    String description = URLDecoder.decode(jsonItem.getString(TAG_DESCRIPTION), Global.CHARSET);
                     String date = jsonItem.getString(TAG_DATE);
                     String bitstream_id = jsonItem.getString(TAG_BITSTREAM_ID);
                     String size = jsonItem.getString(TAG_DOC_SIZE);
-                    String thumb_href = jsonItem.getString(TAG_DOC_THUMB_HREF);
-                    String href = jsonItem.getString(TAG_DOC_HREF);
+                    String thumb_href = URLDecoder.decode(jsonItem.getString(TAG_DOC_THUMB_HREF), Global.CHARSET).replace(" ", "%20");
+                    String href = URLDecoder.decode(jsonItem.getString(TAG_DOC_HREF), Global.CHARSET).replace(" ", "%20");
                     String type = jsonItem.getString(TAG_TYPE);
 
                     mItemsDataSource.createItem(
@@ -287,7 +291,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
                             href, size);
 
                 }
-            } catch (JSONException e) {
+            } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
 

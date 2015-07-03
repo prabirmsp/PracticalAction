@@ -20,7 +20,7 @@
             android:layout_marginLeft="48dp"
             android:layout_marginRight="40dp"
             android:layout_marginTop="4dp"
-            fresco:placeholderImage="@drawable/ic_insert_drive_file_black_48dp"
+            fresco:placeholderImage="@drawable/ic_image_black_48dp"
             fresco:roundedCornerRadius="2dp"/>
 
         <TextView

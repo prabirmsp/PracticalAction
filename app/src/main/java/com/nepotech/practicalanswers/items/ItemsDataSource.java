@@ -9,7 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemsDataSource {
 
@@ -100,8 +99,8 @@ public class ItemsDataSource {
                     "' and " + whereClause + " ORDER BY " + ItemsDBHelper.COLUMN_TITLE;
         else
             query = "SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS +
-                " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
-                "' ORDER BY " + ItemsDBHelper.COLUMN_TITLE;
+                    " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
+                    "' ORDER BY " + ItemsDBHelper.COLUMN_TITLE;
         Cursor cursor = mDatabase.rawQuery(query, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
@@ -207,9 +206,11 @@ public class ItemsDataSource {
 
     }
 
-    /** language filter operations **/
-    public ArrayList<String> getAllLanguages () {
-        ArrayList<String> arrayList= new ArrayList<String>();
+    /**
+     * language filter operations
+     **/
+    public ArrayList<String> getAllLanguages() {
+        ArrayList<String> arrayList = new ArrayList<String>();
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_LANGUAGES +
                 " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
         cursor.moveToFirst();
@@ -222,11 +223,11 @@ public class ItemsDataSource {
         return arrayList;
     }
 
-    public ArrayList<String> getLanguagesInCollection (String collectionId) {
-        ArrayList<String> arrayList= new ArrayList<>();
+    public ArrayList<String> getLanguagesInCollection(String collectionId) {
+        ArrayList<String> arrayList = new ArrayList<>();
         Cursor cu = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS +
-                    " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
-                    "' ORDER BY " + ItemsDBHelper.COLUMN_LANGUAGE, null);
+                " WHERE " + ItemsDBHelper.COLUMN_COLLECTION_ID + " = '" + collectionId +
+                "' ORDER BY " + ItemsDBHelper.COLUMN_LANGUAGE, null);
         cu.moveToFirst();
         String current, previous = null;
         while (!cu.isAfterLast()) {

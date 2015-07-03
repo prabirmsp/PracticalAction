@@ -13,7 +13,7 @@ public class CommunityDBHelper extends SQLiteOpenHelper {
     public static final String TABLE_COMMUNITY = "dspace_community";
     public static final String TABLE_CHILD_COMMUNITY = "dspace_community_child";
 
-    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DSPACE_ID = "dspace_id";
     public static final String COLUMN_PARENT_ID = "parent_id";
     public static final String COLUMN_RGT = "rgt";

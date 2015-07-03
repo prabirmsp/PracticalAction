@@ -19,7 +19,7 @@
         <activity
             android:name=".Splash"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,7 @@
             android:name=".home_activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -102,6 +102,17 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".our_resources_activity.OurResourcesActivity" />
+        </activity>
+        <activity
+            android:name=".items.WebPreview"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_web_preview"
+            android:launchMode="singleTop"
+            android:theme="@style/WebPreviewTheme" >
+        </activity>
+        <activity
+            android:name=".PDFViewActivity"
+            android:label="@string/title_activity_pdfview">
         </activity>
     </application>
 
