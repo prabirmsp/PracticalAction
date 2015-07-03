@@ -41,7 +41,7 @@
                 android:id="@+id/button_change_lang"
                 android:text="Change language filter"
                 android:textColor="@color/text_white"
-                android:background="@drawable/button"
+                android:background="@drawable/button_highlight"
                 android:layout_marginTop="24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

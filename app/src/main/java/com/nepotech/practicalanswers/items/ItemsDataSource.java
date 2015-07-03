@@ -139,6 +139,13 @@ public class ItemsDataSource {
         return present;
     }
 
+    public boolean isEmpty(String table) {
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table , null);
+        boolean empty = cursor.getCount() == 0;
+        cursor.close();
+        return empty;
+    }
+
     /**
      * Starring operations
      **/

@@ -283,7 +283,7 @@ public class SingleItemActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up button_highlight, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -344,7 +344,7 @@ public class SingleItemActivity extends AppCompatActivity {
             pDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
             pDialog.setCancelable(false);
             pDialog.setProgressNumberFormat("%1d/%2d KB");
-            // set cancel download button
+            // set cancel download button_highlight
             pDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
                     new DialogInterface.OnClickListener() {
                         @Override

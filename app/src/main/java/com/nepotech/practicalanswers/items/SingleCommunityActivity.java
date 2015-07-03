@@ -317,7 +317,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
             mSwipeRefresh.setRefreshing(false);
             // Alert Dialog
             new AlertDialog.Builder(SingleCommunityActivity.this).setTitle("Oh no!")
-                    .setMessage("Looks like we can't connect!")
+                    .setMessage("Looks like we can't connect! Please check your internet connection.")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {

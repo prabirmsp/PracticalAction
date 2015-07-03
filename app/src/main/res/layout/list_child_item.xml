@@ -25,11 +25,19 @@
 
         <TextView
             android:id="@+id/lblListItem"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:text="This is a title"
             android:textColor="@color/primary_dark" />
+        <ImageView
+            android:id="@+id/arrow"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
+            android:layout_gravity="center"/>
 
         <!-- android:layout_marginLeft="10dp"  -->
 

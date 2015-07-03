@@ -16,21 +16,23 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.items.Item;
+import com.nepotech.practicalanswers.items.ItemsDBHelper;
 import com.nepotech.practicalanswers.items.ItemsDataSource;
 import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
 
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
     RecyclerView mRecyclerView;
     HomeRecyclerAdapter mRecyclerAdapter;
+    FrameLayout mWelcomeBanner;
     ArrayList<HomeRecyclerItem> mContent;
     ItemsDataSource mItemsDataSource;
     private String mLangFilter;
@@ -38,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final String LANG_PREFS_NAME = "LanguagePrefs";
     public static final String KEY_LANGUAGE = "language";
 
+    private boolean starred, downloaded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,7 @@ public class HomeActivity extends AppCompatActivity {
 
         setTitle("Practical Action");
 
+        mWelcomeBanner = (FrameLayout) findViewById(R.id.frame_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -80,6 +84,11 @@ public class HomeActivity extends AppCompatActivity {
 
         mRecyclerAdapter = new HomeRecyclerAdapter(this, mContent);
         mRecyclerView.setAdapter(mRecyclerAdapter);
+        if (!(starred || downloaded)) {
+            mWelcomeBanner.setVisibility(View.VISIBLE);
+        } else {
+            mWelcomeBanner.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -100,7 +109,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
+        // automatically handle clicks on the Home/Up button_highlight, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
@@ -114,44 +123,55 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private ArrayList<HomeRecyclerItem> getDataFromDB () {
+    private ArrayList<HomeRecyclerItem> getDataFromDB() {
         ArrayList<HomeRecyclerItem> content = new ArrayList<>();
+        // add banner
         content.add(new HomeRecyclerItem(HomeRecyclerItem.BANNER, 0, true));
         mItemsDataSource = new ItemsDataSource(this);
         mItemsDataSource.open();
 
         ArrayList<Item> arrayList;
-        // add starred header
-        content.add(new HomeRecyclerItem(
-                HomeRecyclerItem.HEADER, "Starred Items",
-                new Intent(HomeActivity.this, Starred.class)));
-        // add starred content
-        arrayList = mItemsDataSource.getAllStarred();
-        for (int i = 0; i < 3; i++) {
-            if (i < arrayList.size()) {
-                Item item = arrayList.get(i);
-                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        item.getTitle(), item.getDocumentThumbHref(),
-                        "Starred", item.getDspaceId(), i + 1, true));
-            } else
-                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+
+        downloaded = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_DOWNLOADED);
+        // check if there are any starred
+        if (downloaded) {
+            // add downloaded header
+            content.add(new HomeRecyclerItem(
+                    HomeRecyclerItem.HEADER, "Downloaded Files",
+                    new Intent(HomeActivity.this, Downloaded.class)));
+            // add downloaded content
+            arrayList = mItemsDataSource.getAllDownloaded();
+            for (int i = 0; i < 3; i++) {
+                if (i < arrayList.size()) {
+                    Item item = arrayList.get(i);
+                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                            item.getTitle(), item.getDocumentThumbHref(),
+                            "Downloaded", item.getDspaceId(), i + 1, true));
+                } else
+                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+            }
         }
 
-        // add downloaded header
-        content.add(new HomeRecyclerItem(
-                HomeRecyclerItem.HEADER, "Downloaded Files",
-                new Intent(HomeActivity.this, Downloaded.class)));
-        // add downloaded content
-        arrayList = mItemsDataSource.getAllDownloaded();
-        for (int i = 0; i < 3; i++) {
-            if (i < arrayList.size()) {
-                Item item = arrayList.get(i);
-                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                        item.getTitle(), item.getDocumentThumbHref(),
-                        "Downloaded", item.getDspaceId(), i + 1, true));
-            } else
-                content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+        starred = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_STARRED);
+        // check if there are any starred
+        if (starred) {
+            // add starred header
+            content.add(new HomeRecyclerItem(
+                    HomeRecyclerItem.HEADER, "Starred Items",
+                    new Intent(HomeActivity.this, Starred.class)));
+            // add starred content
+            arrayList = mItemsDataSource.getAllStarred();
+            for (int i = 0; i < 3; i++) {
+                if (i < arrayList.size()) {
+                    Item item = arrayList.get(i);
+                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                            item.getTitle(), item.getDocumentThumbHref(),
+                            "Starred", item.getDspaceId(), i + 1, true));
+                } else
+                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+            }
         }
+
         mItemsDataSource.close();
         return content;
     }

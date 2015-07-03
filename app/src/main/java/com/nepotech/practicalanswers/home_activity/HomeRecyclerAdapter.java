@@ -9,11 +9,13 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -30,6 +32,7 @@ import com.nepotech.practicalanswers.items.SingleItemActivity;
 import com.nepotech.practicalanswers.our_resources_activity.OurResourcesActivity;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ViewHolder> {
 
@@ -88,6 +91,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         }
     }
 
+
     private void onBindBanner(ViewHolder holder, int position, final HomeActivity.HomeRecyclerItem item) {
         holder.moreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,6 +100,14 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
                 mContext.startActivity(intent);
             }
         });
+        int images[] = {
+                R.drawable.welcome1,
+                R.drawable.welcome2,
+                R.drawable.welcome3};
+        Random random = new Random();
+        int randInt = random.nextInt(3);
+        Log.d("RANDINT", "" + randInt);
+        ((ImageView) holder.itemView.findViewById(R.id.image_view)).setImageResource(images[randInt]);
     }
 
     private void onBindHeader(ViewHolder holder, int position, final HomeActivity.HomeRecyclerItem item) {

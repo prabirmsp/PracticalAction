@@ -11,11 +11,11 @@ public class ItemsDBHelper extends SQLiteOpenHelper {
     private static final String DB_ITEMS = "dspace_items.db";
     protected static final int DB_ITEMS_VERSION = 2;
 
-    protected final static String TABLE_ITEMS = "dspace_items";
-    protected final static String TABLE_STARRED = "starred_items";
-    protected final static String TABLE_DOWNLOADED = "downloaded_items";
-    protected final static String TABLE_RECENTS= "recent_items";
-    protected final static String TABLE_LANGUAGES= "languages";
+    public final static String TABLE_ITEMS = "dspace_items";
+    public final static String TABLE_STARRED = "starred_items";
+    public final static String TABLE_DOWNLOADED = "downloaded_items";
+    public final static String TABLE_RECENTS= "recent_items";
+    public final static String TABLE_LANGUAGES= "languages";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_DSPACE_ID = "dspace_id";

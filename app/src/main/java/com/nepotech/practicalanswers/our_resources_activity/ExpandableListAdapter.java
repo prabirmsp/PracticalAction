@@ -58,14 +58,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         txtListChild.setText(childTitle);
 
         SimpleDraweeView draweeView = (SimpleDraweeView) convertView.findViewById(R.id.imageView1);
-        if (Math.abs(Integer.parseInt(child.getLft()) - Integer.parseInt(child.getRgt())) > 1) {
-            Log.d("SUBBCHICK found", child.getTitle());
-            txtListChild.setPadding(10, 0, 0, 0);
+        if (Integer.parseInt(child.getRgt()) - Integer.parseInt(child.getLft()) > 1) {
+            //Log.d("SUBBCHICK found", child.getTitle());
             txtListChild.setTypeface(null, Typeface.BOLD);
-            draweeView.setPadding(20, 0, 0, 0);
+            convertView.findViewById(R.id.arrow).setVisibility(View.VISIBLE);
         } else {
-            txtListChild.setPadding(0, 0, 0, 0);
-            draweeView.setPadding(0, 0, 0, 0);
+            txtListChild.setTypeface(null, Typeface.NORMAL);
+            convertView.findViewById(R.id.arrow).setVisibility(View.INVISIBLE);
         }
 
         String imageurl_child = child.getImageurl();
