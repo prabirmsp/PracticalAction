@@ -15,5 +15,6 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="title_activity_pdfview">PDFViewActivity</string>
+    <string name="title_activity_subbchic">Sub</string>
 
 </resources>

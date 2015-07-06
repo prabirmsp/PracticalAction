@@ -29,21 +29,26 @@ public class ItemsDataSource {
     }
 
     public Item cursorToItem(Cursor cursor) {
-        return new Item(
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_ID)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DSPACE_ID)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_COLLECTION_ID)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_TITLE)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_CREATOR)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_PUBLISHER)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DESC)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_LANGUAGE)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DATE_ISSUED)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_TYPE)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_BITSTREAM_ID)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DOCUMENT_THUMB_HREF)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DOCUMENT_HREF)),
-                cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DOCUMENT_SIZE)));
+        Item item = null;
+        if (cursor != null) {
+            item = new Item(
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_ID)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DSPACE_ID)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_COLLECTION_ID)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_TITLE)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_CREATOR)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_PUBLISHER)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DESC)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_LANGUAGE)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DATE_ISSUED)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_TYPE)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_BITSTREAM_ID)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DOCUMENT_THUMB_HREF)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DOCUMENT_HREF)),
+                    cursor.getString(cursor.getColumnIndex(ItemsDBHelper.COLUMN_DOCUMENT_SIZE)));
+        }
+        return item;
+
     }
 
     // CREATE
@@ -127,6 +132,10 @@ public class ItemsDataSource {
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS + " WHERE " +
                 ItemsDBHelper.COLUMN_DSPACE_ID + " = '" + dspace_id + "'" +
                 " ORDER BY " + ItemsDBHelper.COLUMN_DSPACE_ID, null);
+        if (cursor.getCount() < 1) {
+            cursor.close();
+            return null;
+        }
         cursor.moveToFirst();
         return cursorToItem(cursor);
     }
@@ -140,7 +149,7 @@ public class ItemsDataSource {
     }
 
     public boolean isEmpty(String table) {
-        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table , null);
+        Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + table, null);
         boolean empty = cursor.getCount() == 0;
         cursor.close();
         return empty;

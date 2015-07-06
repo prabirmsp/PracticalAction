@@ -52,7 +52,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
     private static final String LANG_ALL = "All";
 
     RecyclerView mRecyclerView;
-    ItemsRecyclerViewAdapter mListViewAdapter;
+    ItemsRecyclerViewAdapter mRecyclerViewAdapter;
     SwipeRefreshLayout mSwipeRefresh;
     LinearLayout mLinearLayoutNoDocs;
 
@@ -79,6 +79,8 @@ public class SingleCommunityActivity extends AppCompatActivity {
         Fresco.initialize(this);
         setContentView(R.layout.activity_singlecommunity);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         // get from xml
         mRecyclerView = (RecyclerView) findViewById(R.id.items_list);
         mSwipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
@@ -89,10 +91,6 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mSwipeRefresh.setProgressViewOffset(false,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
-
-        mRecyclerView.setHasFixedSize(true);
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        mRecyclerView.setLayoutManager(llm);
 
         Intent thisIntent = getIntent();
         String dspace_id = thisIntent.getStringExtra(CommunityDBHelper.COLUMN_DSPACE_ID);
@@ -107,6 +105,14 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mWindowTitle = mCommunity.getTitle();
         setTitle(mWindowTitle);
 
+        mItems = new ArrayList<>();
+        mRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(llm);
+        // setting adapter
+        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunityActivity.this, mItems, mWindowTitle);
+        // setting list adapter
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mItemsDataSource = new ItemsDataSource(this);
 
         mSwipeRefresh.setRefreshing(true);
@@ -200,10 +206,8 @@ public class SingleCommunityActivity extends AppCompatActivity {
             Log.d("SingleComm.getMapFromDB", "Data Found!!!");
             mItems = temp;
             mItemsDataSource.close();
-            // setting adapter
-            mListViewAdapter = new ItemsRecyclerViewAdapter(SingleCommunityActivity.this, mItems, mWindowTitle);
-            // setting list adapter
-            mRecyclerView.setAdapter(mListViewAdapter);
+            mRecyclerViewAdapter.updateItems(mItems);
+            mRecyclerViewAdapter.notifyDataSetChanged();
             return 0;
         } else { // Data not found in DB
             Log.d("Main.getMapFromDB", "Data not found in DB");
@@ -214,7 +218,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -224,6 +228,9 @@ public class SingleCommunityActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_reload:
                 new GetItems().execute();
+                break;
+            case android.R.id.home:
+                finish();
                 break;
             default:
                 break;

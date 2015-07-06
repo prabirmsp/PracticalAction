@@ -34,6 +34,8 @@ public class Downloaded extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
+        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, null, "Downloaded");
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
 
         mDataSource = new ItemsDataSource(this);
 
@@ -47,9 +49,8 @@ public class Downloaded extends AppCompatActivity {
         mDataSource.open();
 
         mDownloadedItems = mDataSource.getAllDownloaded();
-
-        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mDownloadedItems, "Downloaded");
-        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+        mRecyclerViewAdapter.updateItems(mDownloadedItems);
+        mRecyclerViewAdapter.notifyDataSetChanged();
 
         mDataSource.close();
 

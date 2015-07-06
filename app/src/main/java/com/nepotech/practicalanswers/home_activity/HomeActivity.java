@@ -130,49 +130,43 @@ public class HomeActivity extends AppCompatActivity {
         mItemsDataSource = new ItemsDataSource(this);
         mItemsDataSource.open();
 
-        ArrayList<Item> arrayList;
 
         downloaded = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_DOWNLOADED);
-        // check if there are any starred
-        if (downloaded) {
-            // add downloaded header
-            content.add(new HomeRecyclerItem(
-                    HomeRecyclerItem.HEADER, "Downloaded Files",
-                    new Intent(HomeActivity.this, Downloaded.class)));
-            // add downloaded content
-            arrayList = mItemsDataSource.getAllDownloaded();
-            for (int i = 0; i < 3; i++) {
-                if (i < arrayList.size()) {
-                    Item item = arrayList.get(i);
-                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                            item.getTitle(), item.getDocumentThumbHref(),
-                            "Downloaded", item.getDspaceId(), i + 1, true));
-                } else
-                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
-            }
-        }
+        ArrayList<Item> downloadedItems = mItemsDataSource.getAllDownloaded();
+        content = addContent(content, downloadedItems, downloaded, "Downloaded Items", new Intent(this, Downloaded.class));
 
         starred = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_STARRED);
+        ArrayList<Item> starredItems = mItemsDataSource.getAllStarred();
+        content = addContent(content, starredItems, starred, "Starred Items", new Intent(this, Starred.class));
+
+
+        mItemsDataSource.close();
+        return content;
+    }
+
+    private ArrayList<HomeRecyclerItem> addContent(ArrayList<HomeRecyclerItem> content,
+                                                   ArrayList<Item> toAdd, boolean exists,
+                                                   String headerTitle, Intent intent) {
         // check if there are any starred
-        if (starred) {
+        if (exists) {
             // add starred header
             content.add(new HomeRecyclerItem(
-                    HomeRecyclerItem.HEADER, "Starred Items",
-                    new Intent(HomeActivity.this, Starred.class)));
-            // add starred content
-            arrayList = mItemsDataSource.getAllStarred();
+                    HomeRecyclerItem.HEADER, headerTitle, intent));
             for (int i = 0; i < 3; i++) {
-                if (i < arrayList.size()) {
-                    Item item = arrayList.get(i);
-                    content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
-                            item.getTitle(), item.getDocumentThumbHref(),
-                            "Starred", item.getDspaceId(), i + 1, true));
+                if (i < toAdd.size()) {
+                    Item item = toAdd.get(i);
+                    if (item != null) {
+                        content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD,
+                                item.getTitle(), item.getDocumentThumbHref(),
+                                headerTitle, item.getDspaceId(), i + 1, true));
+                    } else {
+                        content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
+                    }
                 } else
                     content.add(new HomeRecyclerItem(HomeRecyclerItem.ITEM_CARD, i + 1, false));
             }
         }
 
-        mItemsDataSource.close();
         return content;
     }
 

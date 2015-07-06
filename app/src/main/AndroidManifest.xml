@@ -53,11 +53,7 @@
             android:name=".items.SingleCommunityActivity"
             android:label="Collections"
             android:launchMode="singleTop"
-            android:parentActivityName=".our_resources_activity.OurResourcesActivity"
             android:theme="@style/AppTheme" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".our_resources_activity.OurResourcesActivity" />
         </activity>
         <activity
             android:name=".items.SingleItemActivity"
@@ -112,7 +108,16 @@
         </activity>
         <activity
             android:name=".PDFViewActivity"
-            android:label="@string/title_activity_pdfview">
+            android:label="@string/title_activity_pdfview" >
+        </activity>
+        <activity
+            android:name=".our_resources_activity.SubbchicActivity"
+            android:label="@string/title_activity_subbchic"
+            android:parentActivityName=".our_resources_activity.OurResourcesActivity"
+            android:launchMode="singleTop">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".our_resources_activity.OurResourcesActivity" />
         </activity>
     </application>
 

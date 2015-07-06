@@ -51,6 +51,7 @@
                             android:id="@+id/doc_thumb"
                             android:layout_width="108dp"
                             android:layout_height="0dp"
+                            android:minHeight="140dp"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             fresco:placeholderImage="@drawable/ic_insert_filler_file_black_48dp"

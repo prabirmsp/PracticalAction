@@ -38,6 +38,13 @@ public class Starred extends AppCompatActivity {
 
         mDataSource = new ItemsDataSource(this);
 
+        mDataSource.open();
+
+        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, null, "Starred");
+        mRecyclerView.setAdapter(mRecyclerViewAdapter);
+
+        mDataSource.close();
+
     }
 
     @Override
@@ -47,9 +54,8 @@ public class Starred extends AppCompatActivity {
         mDataSource.open();
 
         mStarredItems = mDataSource.getAllStarred();
-        mRecyclerViewAdapter = new ItemsRecyclerViewAdapter(this, mStarredItems, "Starred");
-        mRecyclerView.setAdapter(mRecyclerViewAdapter);
-
+        mRecyclerViewAdapter.updateItems(mStarredItems);
+        mRecyclerViewAdapter.notifyDataSetChanged();
         mDataSource.close();
         if (mStarredItems.size() < 1)
             mFillerTV.setVisibility(View.VISIBLE);

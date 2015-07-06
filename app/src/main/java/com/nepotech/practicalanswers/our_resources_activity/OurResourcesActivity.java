@@ -59,6 +59,7 @@ public class OurResourcesActivity extends AppCompatActivity {
     private static final String TAG_DESCRIPTION = "description";
     private static final String TAG_ALIAS = "alias";
     private static final String TAG_IMAGEURL = "imageurl";
+    public static final String KEY_DSPACE = "dspace";
     protected ArrayList<Community> mParentCommunities;
     protected HashMap<Community, ArrayList<Community>> mChildrenMap;
     private ExpandableListView mExpandableListView;
@@ -149,6 +150,9 @@ public class OurResourcesActivity extends AppCompatActivity {
                     // child community contains sub communities
                     snackbar("subbchic");
 
+                    Intent intent = new Intent(OurResourcesActivity.this, SubbchicActivity.class);
+                    intent.putExtra(KEY_DSPACE, mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
+                    startActivity(intent);
 
 
 

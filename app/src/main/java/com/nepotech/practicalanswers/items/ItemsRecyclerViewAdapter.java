@@ -36,6 +36,10 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
         this.mWindowTitle = windowTitle;
     }
 
+    public void updateItems (ArrayList<Item> items) {
+        this.mItems = items;
+    }
+
     @Override
     public int getItemCount() {
         return mItems.size();
