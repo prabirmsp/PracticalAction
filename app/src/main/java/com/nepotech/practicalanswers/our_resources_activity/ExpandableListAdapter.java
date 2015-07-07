@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.text.Html;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +49,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.list_child_item, null);
         }
+
+        if (isLastChild)
+            convertView.findViewById(R.id.separator).setVisibility(View.INVISIBLE);
+        else
+            convertView.findViewById(R.id.separator).setVisibility(View.VISIBLE);
 
         Community child = (Community) getChild(groupPosition, childPosition);
         String childTitle = child.getTitle();
@@ -109,12 +114,17 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.list_group, null);
         }
 
+        if (groupPosition == 0)
+            convertView.findViewById(R.id.relative_layout).setPadding(0, dp_px(6), 0, 0);
+        else if (groupPosition + 1 == mParentCommunities.size())
+            convertView.findViewById(R.id.relative_layout).setPadding(0, 0, 0, dp_px(6));
+        else
+            convertView.findViewById(R.id.relative_layout).setPadding(0, 0, 0, 0);
+
         Community headerCommunity = mParentCommunities.get(groupPosition);
         String headerTitle = headerCommunity.getTitle();
         TextView lblListHeader = (TextView) convertView
                 .findViewById(R.id.lblListHeader);
-        //Log.i("header in group view", "" + headerTitle);
-        lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 
         //ImageView iv = (ImageView) convertView.findViewById(R.id.imageView1);
@@ -143,5 +153,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    private int dp_px(int dp) {
+        float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, mContext.getResources().getDisplayMetrics());
+        return Math.round(pixels);
     }
 }

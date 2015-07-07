@@ -6,6 +6,7 @@ import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,8 +60,14 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
     @Override
     public void onBindViewHolder(final ViewHolder viewHolder, int i) {
         final Item rowItem = mItems.get(i);
+        if (i == 0)
+            viewHolder.relativeLayout.setPadding(0, dp_px(6), 0, 0);
+        else if (i + 1 == mItems.size())
+            viewHolder.relativeLayout.setPadding(0, 0, 0, dp_px(6));
+        else
+            viewHolder.relativeLayout.setPadding(0, 0, 0, 0);
 
-        viewHolder.v.setOnClickListener(new View.OnClickListener() {
+        viewHolder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(mContext, SingleItemActivity.class);
@@ -121,6 +128,8 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
         SimpleDraweeView draweeView;
         TextView txtTitle;
         TextView txtDesc;
+        View relativeLayout;
+        View cardView;
         View v;
 
         public ViewHolder(View v) {
@@ -129,6 +138,13 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
             txtDesc = (TextView) v.findViewById(R.id.item_description);
             txtTitle = (TextView) v.findViewById(R.id.item_title);
             draweeView = (SimpleDraweeView) v.findViewById(R.id.doc_thumb);
+            relativeLayout = v.findViewById(R.id.relative_layout);
+            cardView = v.findViewById(R.id.card_view);
         }
+    }
+
+    private int dp_px(int dp) {
+        float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, mContext.getResources().getDisplayMetrics());
+        return Math.round(pixels);
     }
 }

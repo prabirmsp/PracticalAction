@@ -43,6 +43,7 @@ import java.net.URLConnection;
 
 public class SingleItemActivity extends AppCompatActivity {
 
+    private static final String OPEN = "open";
     private Item mItem;
     private ItemsDataSource mDataSource;
     public static final String KEY_EXTRA_LINK = "document_href";
@@ -162,7 +163,7 @@ public class SingleItemActivity extends AppCompatActivity {
                 if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id))
                     openFile();
                 else
-                    new DownloadFileFromURL().execute(mItem.getDocumentHref());
+                    downloadFile(OPEN);
             }
         });
         if (mDataSource.isPresent(ItemsDBHelper.TABLE_STARRED, dspace_id)) {
@@ -203,7 +204,7 @@ public class SingleItemActivity extends AppCompatActivity {
                     openFile();
 
                 } else
-                    new DownloadFileFromURL().execute(mItem.getDocumentHref());
+                    downloadFile(null);
 
             }
         });
@@ -230,6 +231,21 @@ public class SingleItemActivity extends AppCompatActivity {
         });
 
     } // oncreate
+
+    private void downloadFile(final String openAfterDownload) {
+        new AlertDialog.Builder(this)
+                .setTitle("Download File")
+                .setMessage("Are you sure you want to download the file to SDCard? (" +
+                        (Integer.parseInt(mItem.getDocumentSize()) / 1024) + "KB)")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new DownloadFileFromURL().execute(mItem.getDocumentHref(), openAfterDownload);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
 
     private void deleteFile() {
         new AlertDialog.Builder(SingleItemActivity.this)
@@ -370,11 +386,11 @@ public class SingleItemActivity extends AppCompatActivity {
          * Downloading file in background thread
          */
         @Override
-        protected String doInBackground(String... f_url) {
+        protected String doInBackground(String... params) {
             int count;
             try {
 
-                URL url = new URL(f_url[0]);
+                URL url = new URL(params[0]);
                 URLConnection connection = url.openConnection();
                 connection.connect();
 
@@ -387,7 +403,7 @@ public class SingleItemActivity extends AppCompatActivity {
                         8192);
 
 
-                fileName = f_url[0].substring(f_url[0].lastIndexOf("/") + 1);
+                fileName = params[0].substring(params[0].lastIndexOf("/") + 1);
 
                 // Output stream
                 OutputStream output = new FileOutputStream(Global.ExtFolderPath + fileName);
@@ -417,7 +433,7 @@ public class SingleItemActivity extends AppCompatActivity {
                 Log.e("Error: ", e.getMessage());
             }
 
-            return null;
+            return params[1];
         }
 
         /**
@@ -430,25 +446,27 @@ public class SingleItemActivity extends AppCompatActivity {
 
 
         @Override
-        protected void onPostExecute(String file_url) {
+        protected void onPostExecute(String result) {
             // dismiss the dialog after the file was downloaded
             pDialog.dismiss();
-            Snackbar.make(findViewById(R.id.relative_layout), "Download Completed!",
-                    Snackbar.LENGTH_LONG)
-                    .setAction("OPEN", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            openFile();
-                        }
-                    })
-                    .show();
-            mDownloadTV.setText("Open");
-            mDownloadIV.setImageResource(R.drawable.ic_offline_pin_black_48dp);
-
 
             // Add to downloaded list
             mDataSource.addDownloaded(mItem.getDspaceId(), fileName);
 
+            if (result == null || !result.equals(OPEN))
+                Snackbar.make(findViewById(R.id.relative_layout), "Download Completed!",
+                        Snackbar.LENGTH_LONG)
+                        .setAction("OPEN", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                openFile();
+                            }
+                        })
+                        .show();
+            else
+                openFile();
+            mDownloadTV.setText("Open");
+            mDownloadIV.setImageResource(R.drawable.ic_offline_pin_black_48dp);
         }
 
 
