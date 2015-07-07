@@ -8,12 +8,35 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
+import com.nepotech.practicalanswers.Global;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class ItemsDataSource {
 
     private SQLiteDatabase mDatabase;
     private ItemsDBHelper dbHelper;
+
+    // JSON Nodes
+    public static final String TAG_COLLECTION_ID = "collection_id";
+    private static final String TAG_ID = "id";
+    private static final String TAG_TITLE = "title";
+    private static final String TAG_DSPACE_ID = "item_dspace_id";
+    private static final String TAG_CREATOR = "creator";
+    private static final String TAG_PUBLISHER = "publisher";
+    private static final String TAG_LANGUAGE = "language";
+    private static final String TAG_DESCRIPTION = "description";
+    private static final String TAG_DATE = "date_issued";
+    private static final String TAG_TYPE = "type";
+    private static final String TAG_DOC_THUMB_HREF = "document_thumb_href";
+    private static final String TAG_DOC_HREF = "document_href";
+    private static final String TAG_DOC_SIZE = "document_size";
+    private static final String TAG_BITSTREAM_ID = "bitstream_id";
 
 
     public ItemsDataSource(Context context) {
@@ -92,6 +115,49 @@ public class ItemsDataSource {
         }
 
         return mDatabase.insert(ItemsDBHelper.TABLE_ITEMS, null, values);
+    }
+
+    public long createItem(JSONObject jsonItem, String collection_id) throws JSONException, UnsupportedEncodingException {
+
+        String dspace_id = jsonItem.getString(TAG_DSPACE_ID);
+        String creator = URLDecoder.decode(jsonItem.getString(TAG_CREATOR), Global.CHARSET);
+        String publisher = URLDecoder.decode(jsonItem.getString(TAG_PUBLISHER), Global.CHARSET);
+        String language = jsonItem.getString(TAG_LANGUAGE);
+        String title = URLDecoder.decode(jsonItem.getString(TAG_TITLE), Global.CHARSET);
+        String description = URLDecoder.decode(jsonItem.getString(TAG_DESCRIPTION), Global.CHARSET);
+        String date = jsonItem.getString(TAG_DATE);
+        String bitstream_id = jsonItem.getString(TAG_BITSTREAM_ID);
+        String size = jsonItem.getString(TAG_DOC_SIZE);
+        String thumb_href = URLDecoder.decode(jsonItem.getString(TAG_DOC_THUMB_HREF), Global.CHARSET).replace(" ", "%20");
+        String href = URLDecoder.decode(jsonItem.getString(TAG_DOC_HREF), Global.CHARSET).replace(" ", "%20");
+        String type = jsonItem.getString(TAG_TYPE);
+
+        return createItem(
+                dspace_id, collection_id, title, creator, publisher,
+                description, language, date, type, bitstream_id, thumb_href,
+                href, size);
+    }
+
+    public ArrayList<Item> search(String searchText) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("SELECT * FROM " + ItemsDBHelper.TABLE_ITEMS + " WHERE (");
+        String[] searchColumns = {ItemsDBHelper.COLUMN_TITLE, ItemsDBHelper.COLUMN_DESC};
+        for (int i = 0; i < searchColumns.length; i++) {
+            builder.append(searchColumns[i] + " LIKE '%" + searchText + "%'");
+            if (i + 1 < searchColumns.length)
+                builder.append(") OR (");
+        }
+        builder.append(")");
+        String query = builder.toString();
+        Cursor cursor = mDatabase.rawQuery(query, null);
+        ArrayList<Item> arrayList = new ArrayList<>();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            arrayList.add(cursorToItem(cursor));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return arrayList;
     }
 
     // READ items
@@ -226,7 +292,7 @@ public class ItemsDataSource {
      * language filter operations
      **/
     public ArrayList<String> getAllLanguages() {
-        ArrayList<String> arrayList = new ArrayList<String>();
+        ArrayList<String> arrayList = new ArrayList<>();
         Cursor cursor = mDatabase.rawQuery("SELECT * FROM " + ItemsDBHelper.TABLE_LANGUAGES +
                 " ORDER BY " + ItemsDBHelper.COLUMN_ID + " DESC", null);
         cursor.moveToFirst();

@@ -9,7 +9,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +45,11 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     public HomeRecyclerAdapter(Context context, ArrayList<HomeActivity.HomeRecyclerItem> content) {
         mContext = context;
         mContent = content;
+    }
+
+    public void updateContent(ArrayList<HomeActivity.HomeRecyclerItem> content) {
+        mContent = content;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -106,7 +110,6 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
                 R.drawable.welcome3};
         Random random = new Random();
         int randInt = random.nextInt(3);
-        Log.d("RANDINT", "" + randInt);
         ((ImageView) holder.itemView.findViewById(R.id.image_view)).setImageResource(images[randInt]);
     }
 
@@ -118,11 +121,17 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
                 mContext.startActivity(item.intent);
             }
         });
+        if (item.visible)
+            holder.moreButton.setVisibility(View.VISIBLE);
+        else
+            holder.moreButton.setVisibility(View.INVISIBLE);
+
     }
 
 
     private void onBindItem(final ViewHolder holder, int position, final HomeActivity.HomeRecyclerItem item) {
         if (item.visible) {
+            holder.itemView.setVisibility(View.VISIBLE);
             holder.textView.setText(item.text);
             holder.textView.setMaxLines(3);
             holder.textView.setEllipsize(TextUtils.TruncateAt.END);

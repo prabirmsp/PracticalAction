@@ -125,7 +125,7 @@
     <style name="ButtonBarButton" />
 
 <style name="WebPreviewTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimaryDark">#000000</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
 
 </style>
 </resources>

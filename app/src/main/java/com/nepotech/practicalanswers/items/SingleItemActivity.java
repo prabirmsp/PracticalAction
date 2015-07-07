@@ -162,7 +162,7 @@ public class SingleItemActivity extends AppCompatActivity {
                 if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id))
                     openFile();
                 else
-                    openWebPreview();
+                    new DownloadFileFromURL().execute(mItem.getDocumentHref());
             }
         });
         if (mDataSource.isPresent(ItemsDBHelper.TABLE_STARRED, dspace_id)) {
@@ -291,12 +291,17 @@ public class SingleItemActivity extends AppCompatActivity {
         if (id == R.id.delete) {
             deleteFile();
             return true;
-        } else if (id == R.id.preview) {
+        } else if (id == R.id.web_preview) {
             openWebPreview();
-
+        } else if (id == R.id.preview) {
+            downloadPreview();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void downloadPreview() {
+
     }
 
     private void openWebPreview() {

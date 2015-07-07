@@ -69,21 +69,22 @@ public class HomeActivity extends AppCompatActivity {
         });
         mRecyclerView.setLayoutManager(gridLayoutManager);
 
-        SharedPreferences langSettings = getSharedPreferences(LANG_PREFS_NAME, 0);
-        mLangFilter = langSettings.getString(KEY_LANGUAGE, LANG_ALL);
-
+        mRecyclerAdapter = new HomeRecyclerAdapter(this, new ArrayList<HomeRecyclerItem>());
+        mRecyclerView.setAdapter(mRecyclerAdapter);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        SharedPreferences langSettings = getSharedPreferences(LANG_PREFS_NAME, 0);
+        mLangFilter = langSettings.getString(KEY_LANGUAGE, LANG_ALL);
+
         /** Add content **/
         mContent = getDataFromDB();
         // add banner
+        mRecyclerAdapter.updateContent(mContent);
 
-        mRecyclerAdapter = new HomeRecyclerAdapter(this, mContent);
-        mRecyclerView.setAdapter(mRecyclerAdapter);
         if (!(starred || downloaded)) {
             mWelcomeBanner.setVisibility(View.VISIBLE);
         } else {
@@ -130,15 +131,13 @@ public class HomeActivity extends AppCompatActivity {
         mItemsDataSource = new ItemsDataSource(this);
         mItemsDataSource.open();
 
-
-        downloaded = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_DOWNLOADED);
-        ArrayList<Item> downloadedItems = mItemsDataSource.getAllDownloaded();
-        content = addContent(content, downloadedItems, downloaded, "Downloaded Items", new Intent(this, Downloaded.class));
-
         starred = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_STARRED);
         ArrayList<Item> starredItems = mItemsDataSource.getAllStarred();
         content = addContent(content, starredItems, starred, "Starred Items", new Intent(this, Starred.class));
 
+        downloaded = !mItemsDataSource.isEmpty(ItemsDBHelper.TABLE_DOWNLOADED);
+        ArrayList<Item> downloadedItems = mItemsDataSource.getAllDownloaded();
+        content = addContent(content, downloadedItems, downloaded, "Downloaded Items", new Intent(this, Downloaded.class));
 
         mItemsDataSource.close();
         return content;
@@ -151,7 +150,7 @@ public class HomeActivity extends AppCompatActivity {
         if (exists) {
             // add starred header
             content.add(new HomeRecyclerItem(
-                    HomeRecyclerItem.HEADER, headerTitle, intent));
+                    HomeRecyclerItem.HEADER, headerTitle, intent, (toAdd.size() > 3)));
             for (int i = 0; i < 3; i++) {
                 if (i < toAdd.size()) {
                     Item item = toAdd.get(i);
@@ -255,11 +254,11 @@ public class HomeActivity extends AppCompatActivity {
             this.visible = visible;
         }
 
-        public HomeRecyclerItem(int viewType, String text, Intent intent) {
+        public HomeRecyclerItem(int viewType, String text, Intent intent, boolean visible) {
             this.viewType = viewType;
             this.text = text;
             this.intent = intent;
-            this.visible = true;
+            this.visible = visible;
         }
     }
 }

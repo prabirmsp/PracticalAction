@@ -1,6 +1,8 @@
 package com.nepotech.practicalanswers.items;
 
 import android.app.Dialog;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -38,7 +41,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 
 public class SingleCommunityActivity extends AppCompatActivity {
@@ -58,20 +60,6 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
     // JSON Nodes
     private static final String TAG_ITEMS = "community_items"; // wrapper object name
-    private static final String TAG_ID = "id";
-    private static final String TAG_TITLE = "title";
-    private static final String TAG_DSPACE_ID = "item_dspace_id";
-    private static final String TAG_COLLECTION_ID = "collection_id";
-    private static final String TAG_CREATOR = "creator";
-    private static final String TAG_PUBLISHER = "publisher";
-    private static final String TAG_LANGUAGE = "language";
-    private static final String TAG_DESCRIPTION = "description";
-    private static final String TAG_DATE = "date_issued";
-    private static final String TAG_TYPE = "type";
-    private static final String TAG_DOC_THUMB_HREF = "document_thumb_href";
-    private static final String TAG_DOC_HREF = "document_href";
-    private static final String TAG_DOC_SIZE = "document_size";
-    private static final String TAG_BITSTREAM_ID = "bitstream_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +112,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         findViewById(R.id.button_change_lang).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showFilterDialog();
+                showFilterDialog(true);
             }
         });
 
@@ -144,7 +132,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         });
     }
 
-    private void showFilterDialog() {
+    private void showFilterDialog(boolean addSelect) {
         /** Set up dialog for filter **/
         final Dialog dialog = new Dialog(this);
         dialog.setContentView(R.layout.filter_dialog);
@@ -159,7 +147,8 @@ public class SingleCommunityActivity extends AppCompatActivity {
         Spinner lang_spinner = (Spinner) dialog.findViewById(R.id.spinner_lang);
         mItemsDataSource.open();
         final ArrayList<String> langList = mItemsDataSource.getLanguagesInCollection(mCommunity.getDspace_id());
-        langList.add(0, "Select..."); // add All to beginning
+        if (addSelect)
+            langList.add(0, "Select..."); // add All to beginning
         langList.add(1, LANG_ALL); // add All to beginning
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1, langList);
@@ -216,10 +205,19 @@ public class SingleCommunityActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+
+        // Associate searchable configuration with the SearchView
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -231,6 +229,9 @@ public class SingleCommunityActivity extends AppCompatActivity {
                 break;
             case android.R.id.home:
                 finish();
+                break;
+            case R.id.filter:
+                showFilterDialog(false);
                 break;
             default:
                 break;
@@ -276,27 +277,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
 
                 for (int i = 0; i < items.length(); i++) {
                     JSONObject jsonItem = items.getJSONObject(i);
-
-                    //String collection_id = jsonItem.getString(TAG_COLLECTION_ID);
-                    String collection_id = mCommunity.getDspace_id();
-                    String dspace_id = jsonItem.getString(TAG_DSPACE_ID);
-                    String creator = URLDecoder.decode(jsonItem.getString(TAG_CREATOR), Global.CHARSET);
-                    String publisher = URLDecoder.decode(jsonItem.getString(TAG_PUBLISHER), Global.CHARSET);
-                    String language = jsonItem.getString(TAG_LANGUAGE);
-                    String title = URLDecoder.decode(jsonItem.getString(TAG_TITLE), Global.CHARSET);
-                    String description = URLDecoder.decode(jsonItem.getString(TAG_DESCRIPTION), Global.CHARSET);
-                    String date = jsonItem.getString(TAG_DATE);
-                    String bitstream_id = jsonItem.getString(TAG_BITSTREAM_ID);
-                    String size = jsonItem.getString(TAG_DOC_SIZE);
-                    String thumb_href = URLDecoder.decode(jsonItem.getString(TAG_DOC_THUMB_HREF), Global.CHARSET).replace(" ", "%20");
-                    String href = URLDecoder.decode(jsonItem.getString(TAG_DOC_HREF), Global.CHARSET).replace(" ", "%20");
-                    String type = jsonItem.getString(TAG_TYPE);
-
-                    mItemsDataSource.createItem(
-                            dspace_id, collection_id, title, creator, publisher,
-                            description, language, date, type, bitstream_id, thumb_href,
-                            href, size);
-
+                    mItemsDataSource.createItem(jsonItem, mCommunity.getDspace_id());
                 }
             } catch (JSONException | UnsupportedEncodingException e) {
                 e.printStackTrace();
