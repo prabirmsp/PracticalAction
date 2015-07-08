@@ -103,8 +103,6 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mRecyclerViewAdapter);
         mItemsDataSource = new ItemsDataSource(this);
 
-        mSwipeRefresh.setRefreshing(true);
-
         SharedPreferences langPrefs = getSharedPreferences(HomeActivity.LANG_PREFS_NAME, 0);
         mLangFilter = langPrefs.getString(HomeActivity.KEY_LANGUAGE, LANG_ALL);
 
@@ -117,11 +115,9 @@ public class SingleCommunityActivity extends AppCompatActivity {
         });
 
         if (getItemsFromDB(mLangFilter) != 0) {
+            mSwipeRefresh.setRefreshing(true);
             mLinearLayoutNoDocs.setVisibility(View.INVISIBLE);
             new GetItems().execute();
-        } else {
-            // snackbar("Data Received from DB!");
-            mSwipeRefresh.setRefreshing(false);
         }
 
         mSwipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

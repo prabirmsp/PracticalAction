@@ -32,13 +32,18 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
 
     public ItemsRecyclerViewAdapter(Context context, ArrayList<Item> items, String windowTitle) {
         super();
-        this.mItems = items;
+        if ((this.mItems = items) == null)
+            this.mItems = new ArrayList<>();
         this.mContext = context;
         this.mWindowTitle = windowTitle;
     }
 
     public void updateItems (ArrayList<Item> items) {
         this.mItems = items;
+    }
+
+    public void addToItems (Item item) {
+        this.mItems.add(item);
     }
 
     @Override

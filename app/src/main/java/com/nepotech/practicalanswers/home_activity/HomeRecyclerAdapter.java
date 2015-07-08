@@ -41,6 +41,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     private final int BANNER = HomeActivity.HomeRecyclerItem.BANNER;
     private final int HEADER = HomeActivity.HomeRecyclerItem.HEADER;
     private final int ITEM_CARD = HomeActivity.HomeRecyclerItem.ITEM_CARD;
+    private final int FOOTER = HomeActivity.HomeRecyclerItem.FOOTER;
 
     public HomeRecyclerAdapter(Context context, ArrayList<HomeActivity.HomeRecyclerItem> content) {
         mContext = context;
@@ -70,6 +71,9 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
                 break;
             case ITEM_CARD:
                 v = inflater.inflate(R.layout.home_rv_item, parent, false);
+                break;
+            case FOOTER:
+                v= inflater.inflate(R.layout.home_rv_footer,parent,false);
                 break;
             default:
                 throw new IllegalStateException("Unexpected viewType (= " + viewType + ")");

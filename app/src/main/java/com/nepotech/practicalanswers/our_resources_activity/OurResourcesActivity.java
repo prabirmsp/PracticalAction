@@ -93,12 +93,9 @@ public class OurResourcesActivity extends AppCompatActivity {
         mAdapter = new ExpandableListAdapter(this, new ArrayList<Community>(), new HashMap<Community, ArrayList<Community>>());
         mExpandableListView.setAdapter(mAdapter);
 
-        mSwipeRefresh.setRefreshing(true);
         if (getMapFromDB() != 0) {
+            mSwipeRefresh.setRefreshing(true);
             refreshData();
-        } else {
-            // snackbar("Data Recieved from DB!");
-            mSwipeRefresh.setRefreshing(false);
         }
 
         mExpandableListView.setOnGroupClickListener(new OnGroupClickListener() {

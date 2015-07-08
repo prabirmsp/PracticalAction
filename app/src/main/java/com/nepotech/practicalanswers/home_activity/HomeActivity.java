@@ -56,11 +56,10 @@ public class HomeActivity extends AppCompatActivity {
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                switch (position) {
+                if (position == 0)
+                    return 3;
+                switch ((position - 1) % 4) {
                     case 0:
-                    case 1:
-                    case 5:
-                    case 9:
                         return 3;
                     default:
                         return 1;
@@ -140,6 +139,8 @@ public class HomeActivity extends AppCompatActivity {
         content = addContent(content, downloadedItems, downloaded, "Downloaded Items", new Intent(this, Downloaded.class));
 
         mItemsDataSource.close();
+
+        content.add(new HomeRecyclerItem(HomeRecyclerItem.FOOTER, 0, true));
         return content;
     }
 
@@ -227,6 +228,7 @@ public class HomeActivity extends AppCompatActivity {
         protected static final int BANNER = 0;
         protected static final int HEADER = 1;
         protected static final int ITEM_CARD = 2;
+        protected static final int FOOTER = 99;
 
         int viewType;
         String text;

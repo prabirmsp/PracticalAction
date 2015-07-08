@@ -4,10 +4,10 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
@@ -34,6 +34,7 @@ public class SearchResultsActivity extends AppCompatActivity {
     TextView mOfflineTV;
     TextView mFillerTV;
     SwipeRefreshLayout mSwipeRefresh;
+    Runnable notifyUpdate;
 
     private boolean isOnline;
 
@@ -59,8 +60,7 @@ public class SearchResultsActivity extends AppCompatActivity {
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
 
-
-        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(false);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
         mAdapter = new ItemsRecyclerViewAdapter(this, null, "Search Results");
@@ -69,12 +69,19 @@ public class SearchResultsActivity extends AppCompatActivity {
         mOfflineTV.setVisibility(View.INVISIBLE);
         mFillerTV.setVisibility(View.INVISIBLE);
 
-        handleIntent(getIntent());
+        notifyUpdate = new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.notifyDataSetChanged();
+            }
+        };
+
+        //handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        handleIntent(intent);
+        //handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
@@ -152,6 +159,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                         if ((item = itemsDataSource.getFromDspaceId(dspace_id)) != null) {
                             // item is already saved in db
                             results.add(item);
+                            mAdapter.addToItems(item);
+                            runOnUiThread(notifyUpdate);
                         } else {
                             // get item from server
                             try {
@@ -159,6 +168,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(jsonItemStr);
                                 itemsDataSource.createItem(jsonObject, jsonObject.getString(ItemsDataSource.TAG_COLLECTION_ID));
                                 results.add(itemsDataSource.getFromDspaceId(dspace_id));
+                                mAdapter.addToItems(item);
+                                runOnUiThread(notifyUpdate);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                                 this.cancel(true);
@@ -185,8 +196,8 @@ public class SearchResultsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Item> items) {
             super.onPostExecute(items);
-            mAdapter.updateItems(items);
-            mAdapter.notifyDataSetChanged();
+            //mAdapter.updateItems(items);
+            //mAdapter.notifyDataSetChanged();
             if (!(items.size() > 0)) {
                 mFillerTV.setVisibility(View.VISIBLE);
             }
@@ -198,4 +209,5 @@ public class SearchResultsActivity extends AppCompatActivity {
         float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, getResources().getDisplayMetrics());
         return Math.round(pixels);
     }
+
 }
