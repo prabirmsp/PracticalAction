@@ -3,35 +3,25 @@ package com.nepotech.practicalanswers;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.http.AndroidHttpClient;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
+import android.util.Log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
 
 public class ServiceHandler {
 
     public static String getText(String url) throws Exception {
+        long startTime = System.currentTimeMillis();
+
         URL website = new URL(url);
         URLConnection connection = website.openConnection();
+        HttpURLConnection urlConnection = (HttpURLConnection) website.openConnection();
         BufferedReader in = new BufferedReader(
-                                new InputStreamReader(
-                                    connection.getInputStream()));
+                new InputStreamReader(
+                        urlConnection.getInputStream()));
 
         StringBuilder response = new StringBuilder();
         String inputLine;
@@ -40,6 +30,10 @@ public class ServiceHandler {
             response.append(inputLine);
 
         in.close();
+
+        long endtime = System.currentTimeMillis();
+
+        Log.d("ServiceHandler", "Time taken (ms): " + (endtime - startTime));
 
         return response.toString();
     }

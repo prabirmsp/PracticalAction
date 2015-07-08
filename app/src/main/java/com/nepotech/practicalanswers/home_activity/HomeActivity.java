@@ -36,7 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     ArrayList<HomeRecyclerItem> mContent;
     ItemsDataSource mItemsDataSource;
     private String mLangFilter;
-    public static final String LANG_ALL = "All";
+    public static final String LANG_ALL = "None";
     public static final String LANG_PREFS_NAME = "LanguagePrefs";
     public static final String KEY_LANGUAGE = "language";
 

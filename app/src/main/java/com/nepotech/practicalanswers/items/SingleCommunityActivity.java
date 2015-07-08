@@ -51,7 +51,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
     ItemsDataSource mItemsDataSource;
     String mWindowTitle;
     String mLangFilter;
-    private static final String LANG_ALL = "All";
+    private static final String LANG_ALL = "None";
 
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mRecyclerViewAdapter;

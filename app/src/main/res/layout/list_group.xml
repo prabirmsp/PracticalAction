@@ -54,8 +54,6 @@
                     android:layout_marginTop="2dp"
                     android:ellipsize="end"
                     android:lineSpacingMultiplier="1.15"
-                    android:lines="3"
-                    android:maxLines="3"
                     android:text="Description goes here"
                     android:textSize="12sp" />
             </LinearLayout>

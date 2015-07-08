@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nepotech.practicalanswers" >
+    package="com.nepotech.practicalanswers">
 
     <!-- permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,7 +11,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="android.app.default_searchable"
             android:value=".SearchResultsActivity" />
@@ -19,7 +19,7 @@
         <activity
             android:name=".Splash"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,7 +30,7 @@
             android:name=".home_activity.HomeActivity"
             android:label="@string/title_activity_home"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +41,7 @@
             android:name=".our_resources_activity.OurResourcesActivity"
             android:label="Our Resources"
             android:launchMode="singleTop"
-            android:parentActivityName=".home_activity.HomeActivity" >
+            android:parentActivityName=".home_activity.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home_activity.HomeActivity" />
@@ -53,13 +53,12 @@
             android:name=".items.SingleCommunityActivity"
             android:label="Collections"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme" >
-        </activity>
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".items.SingleItemActivity"
             android:label="@string/title_activity_single_item"
             android:parentActivityName=".items.SingleCommunityActivity"
-            android:theme="@style/SingleItemTheme" >
+            android:theme="@style/SingleItemTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".items.SingleCommunityActivity" />
@@ -67,7 +66,7 @@
         <activity
             android:name=".home_activity.Starred"
             android:label="@string/title_activity_starred"
-            android:parentActivityName=".home_activity.HomeActivity" >
+            android:parentActivityName=".home_activity.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home_activity.HomeActivity" />
@@ -75,14 +74,14 @@
         <activity
             android:name=".home_activity.Downloaded"
             android:label="@string/title_activity_downloaded"
-            android:parentActivityName=".home_activity.HomeActivity" >
+            android:parentActivityName=".home_activity.HomeActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".home_activity.HomeActivity" />
         </activity>
         <activity
             android:name=".SearchResultsActivity"
-            android:label="@string/title_activity_search_results" >
+            android:label="@string/title_activity_search_results">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -94,7 +93,7 @@
         <activity
             android:name=".community.CommunityDetailsActivity"
             android:label="@string/title_activity_community_details"
-            android:parentActivityName=".our_resources_activity.OurResourcesActivity" >
+            android:parentActivityName=".our_resources_activity.OurResourcesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".our_resources_activity.OurResourcesActivity" />
@@ -104,17 +103,15 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_web_preview"
             android:launchMode="singleTop"
-            android:theme="@style/WebPreviewTheme" >
-        </activity>
+            android:theme="@style/WebPreviewTheme"></activity>
         <activity
             android:name=".PDFViewActivity"
-            android:label="@string/title_activity_pdfview" >
-        </activity>
+            android:label="@string/title_activity_pdfview"></activity>
         <activity
             android:name=".our_resources_activity.SubbchicActivity"
             android:label="@string/title_activity_subbchic"
-            android:parentActivityName=".our_resources_activity.OurResourcesActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:parentActivityName=".our_resources_activity.OurResourcesActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".our_resources_activity.OurResourcesActivity" />

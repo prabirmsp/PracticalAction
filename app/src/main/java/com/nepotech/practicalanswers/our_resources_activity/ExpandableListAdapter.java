@@ -34,6 +34,13 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         mChildrenMap = childMap;
     }
 
+    public void updateContent(ArrayList<Community> parentList,
+                              HashMap<Community, ArrayList<Community>> childMap) {
+        mParentCommunities = parentList;
+        mChildrenMap = childMap;
+        notifyDataSetChanged();
+    }
+
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         return this.mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition);
@@ -107,7 +114,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public View getGroupView(int groupPosition, boolean isExpanded,
                              View convertView, ViewGroup parent) {
-        //Fresco.initialize(mContext);
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) this.mContext
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -121,6 +127,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         else
             convertView.findViewById(R.id.relative_layout).setPadding(0, 0, 0, 0);
 
+
         Community headerCommunity = mParentCommunities.get(groupPosition);
         String headerTitle = headerCommunity.getTitle();
         TextView lblListHeader = (TextView) convertView
@@ -133,11 +140,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
         TextView groupDescription = (TextView) convertView.findViewById(R.id.groupDescription);
         String descriptionText = headerCommunity.getDescription();
-        descriptionText = Html.fromHtml(descriptionText).toString();
+        descriptionText = Html.fromHtml(descriptionText).toString().trim();
         groupDescription.setText(descriptionText);
+        groupDescription.setMaxLines(3);
 
         // Load image
-        //Picasso.with(this.mContext).load(Global.baseUrl + imageurl).into(iv);
         Uri uri = Uri.parse(Global.baseUrl + imageurl);
         SimpleDraweeView draweeView = (SimpleDraweeView) convertView.findViewById(R.id.imageView1);
         draweeView.setImageURI(uri);
@@ -159,4 +166,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         float pixels = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, mContext.getResources().getDisplayMetrics());
         return Math.round(pixels);
     }
+
+
 }

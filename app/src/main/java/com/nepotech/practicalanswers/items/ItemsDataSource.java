@@ -122,7 +122,7 @@ public class ItemsDataSource {
         String dspace_id = jsonItem.getString(TAG_DSPACE_ID);
         String creator = URLDecoder.decode(jsonItem.getString(TAG_CREATOR), Global.CHARSET);
         String publisher = URLDecoder.decode(jsonItem.getString(TAG_PUBLISHER), Global.CHARSET);
-        String language = jsonItem.getString(TAG_LANGUAGE);
+        String language = jsonItem.getString(TAG_LANGUAGE).toUpperCase();
         String title = URLDecoder.decode(jsonItem.getString(TAG_TITLE), Global.CHARSET);
         String description = URLDecoder.decode(jsonItem.getString(TAG_DESCRIPTION), Global.CHARSET);
         String date = jsonItem.getString(TAG_DATE);

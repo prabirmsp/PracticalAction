@@ -67,6 +67,7 @@ public class OurResourcesActivity extends AppCompatActivity {
     private SwipeRefreshLayout mSwipeRefresh;
     // Store Communities Data
     private CommunityDataSource mDataSource;
+    private ExpandableListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,9 @@ public class OurResourcesActivity extends AppCompatActivity {
         mSwipeRefresh.setProgressViewOffset(false,
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
+
+        mAdapter = new ExpandableListAdapter(this, new ArrayList<Community>(), new HashMap<Community, ArrayList<Community>>());
+        mExpandableListView.setAdapter(mAdapter);
 
         mSwipeRefresh.setRefreshing(true);
         if (getMapFromDB() != 0) {
@@ -112,6 +116,7 @@ public class OurResourcesActivity extends AppCompatActivity {
                     intent.putExtra(TITLE, mParentCommunities.get(groupPosition).getTitle());
                     startActivity(intent);
                 }
+
                 return false;
             }
         });
@@ -148,19 +153,11 @@ public class OurResourcesActivity extends AppCompatActivity {
                 Community comm = mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition);
                 if ((Integer.parseInt(comm.getRgt()) - Integer.parseInt(comm.getLft())) > 1) {
                     // child community contains sub communities
-                    snackbar("subbchic");
+                    // snackbar("subbchic");
 
                     Intent intent = new Intent(OurResourcesActivity.this, SubbchicActivity.class);
                     intent.putExtra(KEY_DSPACE, mChildrenMap.get(mParentCommunities.get(groupPosition)).get(childPosition).getDspace_id());
                     startActivity(intent);
-
-
-
-
-
-
-
-
 
 
                 } else {
@@ -204,9 +201,7 @@ public class OurResourcesActivity extends AppCompatActivity {
             }
             mDataSource.close();
             // setting adapter
-            ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(OurResourcesActivity.this, mParentCommunities, mChildrenMap);
-            // setting list adapter
-            mExpandableListView.setAdapter(expandableListAdapter);
+            mAdapter.updateContent(mParentCommunities, mChildrenMap);
             mTVNull.setVisibility(View.INVISIBLE);
             return 0;
         } else { // Data not found in DB
