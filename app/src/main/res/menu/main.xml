@@ -8,13 +8,21 @@
         app:showAsAction="collapseActionView|ifRoom" />
     <item
         android:id="@+id/action_reload"
-        android:orderInCategory="1"
         android:title="Refresh"
-        app:showAsAction="never" />
+        app:showAsAction="never"
+        android:orderInCategory="2"/>
     <item
         android:id="@+id/filter"
         android:icon="@drawable/ic_filter_list_white_48dp"
         android:title="Language Filter"
-        app:showAsAction="withText" />
+        app:showAsAction="withText"
+        android:orderInCategory="3" />
+    <item
+        android:id="@+id/go_home"
+        android:icon="@drawable/ic_filter_list_white_48dp"
+        android:title="Home"
+        app:showAsAction="never"
+        android:orderInCategory="1"
+        />
 
 </menu>

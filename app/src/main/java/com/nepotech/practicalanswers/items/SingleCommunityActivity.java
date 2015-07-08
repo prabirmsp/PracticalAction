@@ -51,7 +51,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
     ItemsDataSource mItemsDataSource;
     String mWindowTitle;
     String mLangFilter;
-    private static final String LANG_ALL = "None";
+    private static final String LANG_ALL = HomeActivity.LANG_ALL;
 
     RecyclerView mRecyclerView;
     ItemsRecyclerViewAdapter mRecyclerViewAdapter;
@@ -233,11 +233,21 @@ public class SingleCommunityActivity extends AppCompatActivity {
             case R.id.filter:
                 showFilterDialog(false);
                 break;
+            case R.id.go_home:
+                goToHomeActivity();
+                break;
             default:
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private class GetItems extends AsyncTask<Void, Void, Void> {

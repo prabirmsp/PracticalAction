@@ -32,6 +32,7 @@ import com.nepotech.practicalanswers.ServiceHandler;
 import com.nepotech.practicalanswers.community.Community;
 import com.nepotech.practicalanswers.community.CommunityDBHelper;
 import com.nepotech.practicalanswers.community.CommunityDataSource;
+import com.nepotech.practicalanswers.home_activity.HomeActivity;
 import com.nepotech.practicalanswers.items.SingleCommunityActivity;
 
 import org.json.JSONArray;
@@ -239,11 +240,25 @@ public class OurResourcesActivity extends AppCompatActivity {
             case R.id.action_reload:
                 refreshData();
                 break;
+            case R.id.go_home:
+                goToHomeActivity();
+                break;
+            case android.R.id.home:
+                finish();
+                //goToHomeActivity();
+                break;
             default:
                 break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void snackbar(String message) {
