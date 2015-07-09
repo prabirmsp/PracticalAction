@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,8 +15,6 @@ import android.widget.TextView;
 
 import com.joanzapata.pdfview.PDFView;
 import com.joanzapata.pdfview.listener.OnPageChangeListener;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -35,6 +32,8 @@ public class PDFViewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pdfview);
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -83,6 +82,7 @@ public class PDFViewActivity extends AppCompatActivity {
         switch (id) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(Global.A_enter, Global.B_exit);
                 return true;
             case R.id.go_to_page:
                 goToPage();
@@ -94,6 +94,7 @@ public class PDFViewActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
     private void goToPage() {
         final LayoutInflater inflater = getLayoutInflater();
@@ -130,5 +131,11 @@ public class PDFViewActivity extends AppCompatActivity {
                     .setMessage("Please delete it and download it again.")
                     .setPositiveButton("OK", null).show();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 }

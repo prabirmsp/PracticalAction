@@ -8,6 +8,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
+import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
 
 
@@ -18,8 +19,9 @@ public class WebPreview extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_web_preview);
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
 
         final WebView webView = (WebView) findViewById(R.id.webview);
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -48,5 +50,11 @@ public class WebPreview extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
             super.onProgressChanged(view, newProgress);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 }

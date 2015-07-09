@@ -11,7 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.transition.Fade;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +21,9 @@ import android.widget.FrameLayout;
 import android.widget.Spinner;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.nepotech.practicalanswers.AnalyticsApplication;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.items.Item;
 import com.nepotech.practicalanswers.items.ItemsDBHelper;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private static final String TAG = HomeActivity.class.getSimpleName();
     RecyclerView mRecyclerView;
     HomeRecyclerAdapter mRecyclerAdapter;
     FrameLayout mWelcomeBanner;
@@ -40,7 +44,7 @@ public class HomeActivity extends AppCompatActivity {
     public static final String LANG_ALL = "All";
     public static final String LANG_PREFS_NAME = "LanguagePrefs";
     public static final String KEY_LANGUAGE = "language";
-
+    Tracker mTracker;
     private boolean starred, downloaded;
 
     @Override
@@ -76,6 +80,14 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+        String name = "HomeActivity";
+        Log.i(TAG, "Setting screen name: " + name);
+        mTracker.setScreenName("Image~" + name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
 
         SharedPreferences langSettings = getSharedPreferences(LANG_PREFS_NAME, 0);
         mLangFilter = langSettings.getString(KEY_LANGUAGE, LANG_ALL);

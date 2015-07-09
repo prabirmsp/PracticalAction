@@ -28,6 +28,9 @@ import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.nepotech.practicalanswers.AnalyticsApplication;
 import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.PDFViewActivity;
 import com.nepotech.practicalanswers.R;
@@ -43,6 +46,7 @@ import java.net.URLConnection;
 
 public class SingleItemActivity extends AppCompatActivity {
 
+    private static final String TAG = SingleItemActivity.class.getSimpleName();
     private static final String OPEN = "open";
     private Item mItem;
     private ItemsDataSource mDataSource;
@@ -51,12 +55,19 @@ public class SingleItemActivity extends AppCompatActivity {
     private SimpleDraweeView mThumb;
     private TextView mDownloadTV;
     private ImageView mDownloadIV;
+    private Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Obtain the shared Tracker instance.
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
+
         Fresco.initialize(this);
         setContentView(R.layout.activity_single_item);
+
         // Transition
         overridePendingTransition(Global.B_enter, Global.A_exit);
 
@@ -191,7 +202,17 @@ public class SingleItemActivity extends AppCompatActivity {
                     mDataSource.removeStar(dspace_id);
                     star_iv.setImageResource(R.drawable.ic_star_border_black_48dp);
                     star_tv.setText("Star");
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Action")
+                            .setAction("Un-Star")
+                            .setLabel("Un-star Item")
+                            .build());
                 } else {
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Action")
+                            .setAction("Star")
+                            .setLabel("Star Item")
+                            .build());
                     mDataSource.addStar(dspace_id);
                     star_iv.setImageResource(R.drawable.ic_star_black_48dp);
                     star_tv.setText("Starred");
@@ -202,11 +223,18 @@ public class SingleItemActivity extends AppCompatActivity {
         download_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (mDataSource.isPresent(ItemsDBHelper.TABLE_DOWNLOADED, dspace_id)) {
                     openFile();
 
-                } else
+                } else {
                     downloadFile(null);
+                    mTracker.send(new HitBuilders.EventBuilder()
+                            .setCategory("Action")
+                            .setAction("Download")
+                            .setLabel("Download Item")
+                            .build());
+                }
 
             }
         });
@@ -222,6 +250,11 @@ public class SingleItemActivity extends AppCompatActivity {
         share_ll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTracker.send(new HitBuilders.EventBuilder()
+                        .setCategory("Action")
+                        .setAction("Share")
+                        .setLabel("Share Item")
+                        .build());
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.setType("text/plain");
                 intent.putExtra(Intent.EXTRA_SUBJECT, "Practical Action");
@@ -233,6 +266,18 @@ public class SingleItemActivity extends AppCompatActivity {
         });
 
     } // oncreate
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // Tracker
+        String name = "SingleItem";
+        Log.i(TAG, "Setting screen name: " + name);
+        mTracker.setScreenName("Image~" + name);
+        mTracker.send(new HitBuilders.ScreenViewBuilder().build());
+
+    }
 
     private void downloadFile(final String openAfterDownload) {
         new AlertDialog.Builder(this)

@@ -4,11 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.items.Item;
 import com.nepotech.practicalanswers.items.ItemsDataSource;
@@ -28,6 +28,8 @@ public class Downloaded extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_items_recycler_view);
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
 
         mFillerTV = (TextView) findViewById(R.id.fillerTextView);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -61,4 +63,19 @@ public class Downloaded extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            finish();
+            overridePendingTransition(Global.A_enter, Global.B_exit);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
+    }
 }
