@@ -1,5 +1,6 @@
 package com.nepotech.practicalanswers;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 
@@ -18,9 +19,15 @@ public class Global {
             .getExternalStorageDirectory().toString() + File.separator +
             Global.ExtFolderName + File.separator;
 
-
+    // Transitions
+    public static int A_exit = R.anim.fade_out;
+    public static int B_enter = R.anim.right_slide_in;
+    public static int A_enter = R.anim.fade_in;
+    public static int B_exit = R.anim.right_slide_out;
 
     public static boolean isLolliop() {
         return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
+
+
 }

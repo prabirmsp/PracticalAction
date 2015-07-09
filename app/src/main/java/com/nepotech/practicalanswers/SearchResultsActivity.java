@@ -63,7 +63,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(false);
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
-        mAdapter = new ItemsRecyclerViewAdapter(this, null, "Search Results");
+        mAdapter = new ItemsRecyclerViewAdapter(this, new ArrayList<Item>(), "Search Results");
         mRecyclerView.setAdapter(mAdapter);
 
         mOfflineTV.setVisibility(View.INVISIBLE);
@@ -76,12 +76,12 @@ public class SearchResultsActivity extends AppCompatActivity {
             }
         };
 
-        //handleIntent(getIntent());
+        handleIntent(getIntent());
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        //handleIntent(intent);
+        handleIntent(intent);
     }
 
     private void handleIntent(Intent intent) {
@@ -167,7 +167,8 @@ public class SearchResultsActivity extends AppCompatActivity {
                                 String jsonItemStr = ServiceHandler.getText(Global.url + "?get_single_item=" + dspace_id);
                                 JSONObject jsonObject = new JSONObject(jsonItemStr);
                                 itemsDataSource.createItem(jsonObject, jsonObject.getString(ItemsDataSource.TAG_COLLECTION_ID));
-                                results.add(itemsDataSource.getFromDspaceId(dspace_id));
+                                item = itemsDataSource.getFromDspaceId(dspace_id);
+                                results.add(item);
                                 mAdapter.addToItems(item);
                                 runOnUiThread(notifyUpdate);
                             } catch (JSONException e) {

@@ -67,6 +67,9 @@ public class SingleCommunityActivity extends AppCompatActivity {
         Fresco.initialize(this);
         setContentView(R.layout.activity_singlecommunity);
 
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // get from xml
@@ -225,6 +228,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
                 break;
             case android.R.id.home:
                 finish();
+                overridePendingTransition(Global.A_enter, Global.B_exit);
                 break;
             case R.id.filter:
                 showFilterDialog(false);
@@ -239,11 +243,18 @@ public class SingleCommunityActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
+    }
+
     private void goToHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 
     private class GetItems extends AsyncTask<Void, Void, Void> {

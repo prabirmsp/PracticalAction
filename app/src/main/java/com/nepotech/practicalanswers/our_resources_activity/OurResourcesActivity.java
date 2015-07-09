@@ -75,6 +75,8 @@ public class OurResourcesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         setContentView(R.layout.activity_main);
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
 
         // lint to xml
         mExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
@@ -242,7 +244,7 @@ public class OurResourcesActivity extends AppCompatActivity {
                 break;
             case android.R.id.home:
                 finish();
-                //goToHomeActivity();
+                overridePendingTransition(Global.A_enter, Global.B_exit);
                 break;
             default:
                 break;
@@ -251,11 +253,18 @@ public class OurResourcesActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
+    }
+
     private void goToHomeActivity() {
         Intent intent = new Intent(this, HomeActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 
     private void snackbar(String message) {
@@ -376,4 +385,5 @@ public class OurResourcesActivity extends AppCompatActivity {
             super.onCancelled();
         }
     }
+
 }

@@ -57,6 +57,8 @@ public class SingleItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
         setContentView(R.layout.activity_single_item);
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
 
         Intent thisIntent = getIntent();
         final String dspace_id = thisIntent.getStringExtra(ItemsDBHelper.COLUMN_DSPACE_ID);
@@ -304,16 +306,31 @@ public class SingleItemActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.delete) {
-            deleteFile();
-            return true;
-        } else if (id == R.id.web_preview) {
-            openWebPreview();
-        } else if (id == R.id.preview) {
-            downloadPreview();
+        switch (id) {
+            case R.id.delete:
+                deleteFile();
+                break;
+            case R.id.web_preview:
+                openWebPreview();
+                break;
+            case R.id.preview:
+                downloadPreview();
+                break;
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(Global.A_enter, Global.B_exit);
+                break;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 
     private void downloadPreview() {
