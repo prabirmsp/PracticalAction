@@ -38,17 +38,17 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
         this.mWindowTitle = windowTitle;
     }
 
-    public void updateItems (ArrayList<Item> items) {
+    public void updateItems(ArrayList<Item> items) {
         this.mItems = items;
     }
 
-    public void addToItems (Item item) {
+    public void addToItems(Item item) {
         this.mItems.add(item);
     }
 
     @Override
     public int getItemCount() {
-        if(mItems == null)
+        if (mItems == null)
             return 0;
         return mItems.size();
     }
@@ -90,6 +90,7 @@ public class ItemsRecyclerViewAdapter extends RecyclerView.Adapter<ItemsRecycler
 
         // set document thumb imageview
         Uri uri = Uri.parse(imageUrl);
+
         ControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
             @Override
             public void onFinalImageSet(

@@ -80,7 +80,7 @@ public class SingleCommunityActivity extends AppCompatActivity {
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
         // fix setRefreshing(true)
         mSwipeRefresh.setProgressViewOffset(false,
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -48, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
 
         Intent thisIntent = getIntent();

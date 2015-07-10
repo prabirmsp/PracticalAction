@@ -57,7 +57,7 @@ public class SearchResultsActivity extends AppCompatActivity {
         mSwipeRefresh.setEnabled(false);
         mSwipeRefresh.setColorSchemeResources(R.color.primary);
         mSwipeRefresh.setProgressViewOffset(false,
-                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -28, getResources().getDisplayMetrics()),
+                (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, -48, getResources().getDisplayMetrics()),
                 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 16, getResources().getDisplayMetrics()));
 
         mRecyclerView.setHasFixedSize(false);

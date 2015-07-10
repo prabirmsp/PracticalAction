@@ -35,6 +35,7 @@ import com.nepotech.practicalanswers.Global;
 import com.nepotech.practicalanswers.PDFViewActivity;
 import com.nepotech.practicalanswers.R;
 import com.nepotech.practicalanswers.ServiceHandler;
+import com.nepotech.practicalanswers.home_activity.HomeActivity;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -366,6 +367,9 @@ public class SingleItemActivity extends AppCompatActivity {
                 finish();
                 overridePendingTransition(Global.A_enter, Global.B_exit);
                 break;
+            case R.id.go_home:
+                goToHomeActivity();
+                break;
             default:
                 break;
         }
@@ -376,7 +380,7 @@ public class SingleItemActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(Global.A_enter, Global.B_exit);
+        goToHomeActivity();
     }
 
     private void downloadPreview() {
@@ -397,6 +401,13 @@ public class SingleItemActivity extends AppCompatActivity {
         }
     }
 
+    private void goToHomeActivity() {
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
+    }
 
     /**
      * Background Async Task to download file
