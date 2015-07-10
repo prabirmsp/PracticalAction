@@ -65,7 +65,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="My description is the best!"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:maxLines="6"
+                    android:ellipsize="end"/>
             </LinearLayout>
         </LinearLayout>
 
