@@ -38,6 +38,7 @@ public class WebPreview extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+                overridePendingTransition(Global.A_enter, Global.B_exit);
             }
         });
     }

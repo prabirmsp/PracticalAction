@@ -30,6 +30,8 @@ public class SubbchicActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subbchic);
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
 
         String dspace = getIntent().getStringExtra(OurResourcesActivity.KEY_DSPACE);
 
@@ -61,6 +63,14 @@ public class SubbchicActivity extends AppCompatActivity {
 
         dataSource.close();
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        // Transition
+        overridePendingTransition(Global.B_enter, Global.A_exit);
     }
 
     private class CustomLVAdapter extends BaseAdapter {

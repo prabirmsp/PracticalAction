@@ -310,6 +310,7 @@ public class SingleItemActivity extends AppCompatActivity {
                                 mDataSource.removeDowloaded(mItem.getDspaceId());
                                 Toast.makeText(SingleItemActivity.this, "File Deleted Sucessfully", Toast.LENGTH_LONG).show();
                                 finish();
+                                overridePendingTransition(Global.A_enter, Global.B_exit);
                             }
                             snackbar("File could not be deleted.");
                         } else {
