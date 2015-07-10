@@ -30,6 +30,7 @@ public class WebPreview extends AppCompatActivity {
         progressBar.setProgress(0);
 
         String url = getIntent().getStringExtra(SingleItemActivity.KEY_EXTRA_LINK);
+        webView.setWebContentsDebuggingEnabled(false);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebChromeClient(new MyWebViewClient());
         webView.loadUrl("https://docs.google.com/gview?embedded=true&url=" + url);
