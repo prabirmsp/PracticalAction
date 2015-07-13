@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -70,7 +72,16 @@ public class SubbchicActivity extends AppCompatActivity {
         super.onBackPressed();
         finish();
         // Transition
-        overridePendingTransition(Global.B_enter, Global.A_exit);
+        overridePendingTransition(Global.A_enter, Global.B_exit);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            overridePendingTransition(Global.A_enter, Global.B_exit);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class CustomLVAdapter extends BaseAdapter {

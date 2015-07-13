@@ -380,7 +380,8 @@ public class SingleItemActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        goToHomeActivity();
+        finish();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 
     private void downloadPreview() {

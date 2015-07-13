@@ -290,7 +290,8 @@ public class OurResourcesActivity extends AppCompatActivity {
             String jsonStr = "";
             try {
                 if (!ServiceHandler.isOnline(OurResourcesActivity.this)) {
-                    cancel(true);
+                    this.cancel(true);
+                    return null;
                 }
                 jsonStr = ServiceHandler.getText(Global.url);
             } catch (Exception e) {

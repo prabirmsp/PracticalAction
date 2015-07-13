@@ -1,10 +1,14 @@
 package com.nepotech.practicalanswers.items;
 
+import android.annotation.TargetApi;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
 
@@ -30,10 +34,18 @@ public class WebPreview extends AppCompatActivity {
         progressBar.setProgress(0);
 
         String url = getIntent().getStringExtra(SingleItemActivity.KEY_EXTRA_LINK);
-        webView.setWebContentsDebuggingEnabled(false);
-        webView.getSettings().setJavaScriptEnabled(true);
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        disableDebug(webView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) //required for running javascript on android 4.1 or later
+        {
+            settings.setAllowFileAccessFromFileURLs(true);
+            settings.setAllowUniversalAccessFromFileURLs(true);
+            settings.setBuiltInZoomControls(true);
+        }
         webView.setWebChromeClient(new MyWebViewClient());
         webView.loadUrl("https://docs.google.com/gview?embedded=true&url=" + url);
+
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,4 +71,10 @@ public class WebPreview extends AppCompatActivity {
         super.onBackPressed();
         overridePendingTransition(Global.A_enter, Global.B_exit);
     }
+
+    @TargetApi(19)
+    private void disableDebug(WebView webView){
+        webView.setWebContentsDebuggingEnabled(false);
+    }
+
 }

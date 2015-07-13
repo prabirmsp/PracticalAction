@@ -102,11 +102,19 @@ public class SearchResultsActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
+                overridePendingTransition(Global.A_enter, Global.B_exit);
                 break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        overridePendingTransition(Global.A_enter, Global.B_exit);
     }
 
     public class QuerySearch extends AsyncTask<String, Void, ArrayList<Item>> {
