@@ -5,7 +5,7 @@ Created by **Smart Solutions**, 2015.
 
 ### Home Screen
 
-![home](/Screenshots/home.png?raw=true)
+![home](/Screenshots/home.png?raw=true){:height="300px"}
 
 Upon opening the application, the home screen will be displayed, along with a welcome message. This screen can be accessed from any other screen by tapping on the `Home` button in the menu on the top right.
 
