@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -75,6 +76,13 @@ public class HomeActivity extends AppCompatActivity {
 
         mRecyclerAdapter = new HomeRecyclerAdapter(this, new ArrayList<HomeRecyclerItem>());
         mRecyclerView.setAdapter(mRecyclerAdapter);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton("CONTINUE", null);
+        builder.setView(R.layout.demo_dialog);
+        builder.setCancelable(false);
+        builder.show();
+
     }
 
     @Override

@@ -1,0 +1,62 @@
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<div style="margin-right: 5%; margin-left: 5%;">
+<h1>Practical Answers - Document Browser - Android</h1>
+<p>Created by <strong>Smart Solutions</strong>, 2015.</p>
+<h2>Functionality and Usage</h2>
+<h3>Home Screen</h3>
+<p>Upon opening the application, the home screen will be displayed, along with a welcome message. This screen can be accessed from any other screen by tapping on the <code>Home</code> button in the menu on the top right.</p>
+<h4>Starred and Downloaded Items</h4>
+<p>The home screen will also display at most three recently starred and three recently downloaded documents, if there are any. If there are more than three starred or downloaded documents, the complete list of the documents can be accessed by tapping the <code>MORE</code> button which will appear next to the section heading.</p>
+<h4>Language Filter</h4>
+<p>Tapping the language filter button on the top ActionBar will bring up the language filter settings dialog.  Only documents written in the selected language will be shown throughout the app. This setting will remain set even when the app is restarted.</p>
+<h4>Search</h4>
+<p>You may search for a document by tapping on the search icon in the top ActionBar. Searching for a document matches the search query against the titles and descriptions, and the results are ordered by relevance.</p>
+<p>If the device is connected to the internet, the app will search all items in the web server. If the device is not connected to the internet, only the documents which have been loaded in the local SQLite database on the device will be searched, and an <code>Offline Search</code> message will be shown.</p>
+<h3>Our Resources Screen</h3>
+<p>Tapping on the <code>Resources</code> button on the home screen will open the Our Resources screen, which will display a list of document categories along with its descriptions. These categories are sorted in alphabetical order.</p>
+<p>When a category is tapped, a list of sub-categories will be displayed if there are any. Tapping on a sub-category will display a list of all the documents within that sub-category.</p>
+<h3>Document Screen</h3>
+<p>The document screen will show detailed information about the selected document, including:</p>
+<ul>
+<li>Title</li>
+<li>Thumbnail</li>
+<li>Description</li>
+<li>Author</li>
+<li>Publisher</li>
+<li>Language</li>
+<li>Year Published</li>
+<li>Type and Size</li>
+</ul>
+<p>Tapping on the <code>Star</code> button will add the document to the collection of starred documents, accessible from the home screen.</p>
+<p>Tapping on the document thumbnail or the <code>Download</code> button will download the document to the external storage (SDCard) of the device. All downloaded documents are stored in a folder named <code>PracticalAction</code> in the root of the external storage directory. A downloaded document may be deleted from the device by clicking the trash icon on the top right.</p>
+<p>A document that has not been downloaded can be previewed by tapping on the <code>Web Preview</code> button in the top right menu.</p>
+<h4>Viewing a Downloaded Document</h4>
+<p>Downloaded documents may be viewed by tapping the <code>Open</code> button, which will open the document in the PDF viewer embedded into the application. The PDF can be opened with an external app by tapping the <code>Open in...</code> button in the top right menu when viewing a document.</p>
+<p><em><strong>Note:</strong> Uninstalling or re-installing the application will clear the <code>Starred</code> and <code>Downloaded</code> lists, but will not delete the downloaded documents itself from external storage.</em></p>
+<h2>Obtaining Data</h2>
+<h3>Server Side</h3>
+<p>All server side queries take place in the <code>paJSON.php</code> file. The application receives its data by querying to the server via the HTTP GET method. The data is then returned by the PHP script in JSON format.</p>
+<h3>Client Side</h3>
+<p>The data received by the app is stored in a SQLite database on the Android phone itself to make it available offline. The data is replaced when refreshed.</p>
+<h3>Order of Execution</h3>
+<p><img src="flow.png" alt=""></p>
+<ol>
+<li>
+<p>The Android application requests data from the server through <code>HTTP GET</code> to the PHP script. An initial request is made for the list of categories when the <em>Our Resources</em> page of the app is loaded. Further requests are made to get the list of documents when a category is selected.</p>
+</li>
+<li>
+<p>The <code>paJSON.php</code> file queries the MySQL Database and returns the encoded data in JSON format.</p>
+</li>
+<li>
+<p>The app parses the JSON encoded data and stores it locally in a SQLite Database.</p>
+</li>
+<li>
+<p>The updated content is displayed on the screen.</p>
+</li>
+<li>
+<p>When not connected to the internet, the app pulls data locally from the SQLite Database instead of sending a request to the server.</p>
+</li>
+</ol>
+<p>Created on <em>Android Studio, v1.3</em>. Tested on Android <em>Lollipop</em> and <em>KitKat</em>.</p>
+<h5>Last Edit: July 28, 2015</h5>
+</div>
