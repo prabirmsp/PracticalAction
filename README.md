@@ -5,7 +5,7 @@ Created by **Smart Solutions**, 2015.
 
 ### Home Screen
 
-<img src="/Screenshots/home.png?raw=true" height="300px"/>
+<img src="/Screenshots/home.png?raw=true" height="300px" style="float: right"/>
 
 Upon opening the application, the home screen will be displayed, along with a welcome message. This screen can be accessed from any other screen by tapping on the `Home` button in the menu on the top right.
 
@@ -19,7 +19,7 @@ Tapping the language filter button on the top ActionBar will bring up the langua
 
 #### Search
 
-<img src="/Screenshots/search.png?raw=true" height="300px"/>
+<img src="/Screenshots/search.png?raw=true" height="300px" style="float: right"/>
 
 You may search for a document by tapping on the search icon in the top ActionBar. Searching for a document matches the search query against the titles and descriptions, and the results are ordered by relevance.
 
@@ -27,7 +27,7 @@ If the device is connected to the internet, the app will search all items in the
 
 ### Our Resources Screen
 
-<img src="/Screenshots/our_resources.png?raw=true" height="300px"/>
+<img src="/Screenshots/our_resources.png?raw=true" height="300px" style="float: right"/>
 
 Tapping on the `Resources` button on the home screen will open the Our Resources screen, which will display a list of document categories along with its descriptions. These categories are sorted in alphabetical order. 
 
@@ -35,7 +35,7 @@ When a category is tapped, a list of sub-categories will be displayed if there a
 
 ### Document Screen
 
-<img src="/Screenshots/single_item.png?raw=true" height="300px"/>
+<img src="/Screenshots/single_item.png?raw=true" height="300px" style="float: right"/>
 
 The document screen will show detailed information about the selected document, including:
 * Title
