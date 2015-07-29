@@ -1,12 +1,11 @@
-# panswer
-Practical Answers -> Practical Action
-
 # Practical Answers - Document Browser Android 
 Created by **Smart Solutions**, 2015.
 
 ## Functionality and Usage
 
 ### Home Screen
+
+![home](Screenshots/home.png)
 
 Upon opening the application, the home screen will be displayed, along with a welcome message. This screen can be accessed from any other screen by tapping on the `Home` button in the menu on the top right.
 
@@ -20,17 +19,23 @@ Tapping the language filter button on the top ActionBar will bring up the langua
 
 #### Search
 
+![search](Screenshots/search.png)
+
 You may search for a document by tapping on the search icon in the top ActionBar. Searching for a document matches the search query against the titles and descriptions, and the results are ordered by relevance.
 
 If the device is connected to the internet, the app will search all items in the web server. If the device is not connected to the internet, only the documents which have been loaded in the local SQLite database on the device will be searched, and an `Offline Search` message will be shown.
 
 ### Our Resources Screen
 
+![our resources](Screenshots/our_resources.png)
+
 Tapping on the `Resources` button on the home screen will open the Our Resources screen, which will display a list of document categories along with its descriptions. These categories are sorted in alphabetical order. 
 
 When a category is tapped, a list of sub-categories will be displayed if there are any. Tapping on a sub-category will display a list of all the documents within that sub-category.
 
 ### Document Screen
+
+![single item](Screenshots/single_item.png)
 
 The document screen will show detailed information about the selected document, including:
 * Title
