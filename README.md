@@ -5,7 +5,7 @@ Created by **Smart Solutions**, 2015.
 
 ### Home Screen
 
-![home](Screenshots/home.png)
+![home](/Screenshots/home.png?raw=true)
 
 Upon opening the application, the home screen will be displayed, along with a welcome message. This screen can be accessed from any other screen by tapping on the `Home` button in the menu on the top right.
 
@@ -19,7 +19,7 @@ Tapping the language filter button on the top ActionBar will bring up the langua
 
 #### Search
 
-![search](Screenshots/search.png)
+![search](/Screenshots/search.png?raw=true)
 
 You may search for a document by tapping on the search icon in the top ActionBar. Searching for a document matches the search query against the titles and descriptions, and the results are ordered by relevance.
 
@@ -27,7 +27,7 @@ If the device is connected to the internet, the app will search all items in the
 
 ### Our Resources Screen
 
-![our resources](Screenshots/our_resources.png)
+![our resources](/Screenshots/our_resources.png?raw=true)
 
 Tapping on the `Resources` button on the home screen will open the Our Resources screen, which will display a list of document categories along with its descriptions. These categories are sorted in alphabetical order. 
 
@@ -35,7 +35,7 @@ When a category is tapped, a list of sub-categories will be displayed if there a
 
 ### Document Screen
 
-![single item](Screenshots/single_item.png)
+![single item](/Screenshots/single_item.png?raw=true)
 
 The document screen will show detailed information about the selected document, including:
 * Title
@@ -72,7 +72,7 @@ All server side queries take place in the `paJSON.php` file. The application rec
 The data received by the app is stored in a SQLite database on the Android phone itself to make it available offline. The data is replaced when refreshed. 
 
 ### Order of Execution
-![](flow.png)
+![](/flow.png?raw=true)
 
 1. The Android application requests data from the server through `HTTP GET` to the PHP script. An initial request is made for the list of categories when the *Our Resources* page of the app is loaded. Further requests are made to get the list of documents when a category is selected.
 
