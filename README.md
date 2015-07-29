@@ -1,6 +1,30 @@
 # Practical Answers - Document Browser Android 
 Created by **Smart Solutions**, 2015.
 
+## Obtaining Data
+
+### Server Side
+
+All server side queries take place in the `paJSON.php` file. The application receives its data by querying to the server via the HTTP GET method. The data is then returned by the PHP script in JSON format.
+
+### Client Side
+
+The data received by the app is stored in a SQLite database on the Android phone itself to make it available offline. The data is replaced when refreshed. 
+
+### Order of Execution
+![](/flow.png?raw=true)
+
+1. The Android application requests data from the server through `HTTP GET` to the PHP script. An initial request is made for the list of categories when the *Our Resources* page of the app is loaded. Further requests are made to get the list of documents when a category is selected.
+
+2. The `paJSON.php` file queries the MySQL Database and returns the encoded data in JSON format.
+
+3. The app parses the JSON encoded data and stores it locally in a SQLite Database.
+
+4. The updated content is displayed on the screen. 
+
+5. When not connected to the internet, the app pulls data locally from the SQLite Database instead of sending a request to the server.
+
+
 ## Functionality and Usage
 
 ### Home Screen
@@ -59,31 +83,6 @@ Downloaded documents may be viewed by tapping the `Open` button, which will open
 
 
 *__Note:__ Uninstalling or re-installing the application will clear the `Starred` and `Downloaded` lists, but will not delete the downloaded documents itself from external storage.*
-
-
-## Obtaining Data
-
-### Server Side
-
-All server side queries take place in the `paJSON.php` file. The application receives its data by querying to the server via the HTTP GET method. The data is then returned by the PHP script in JSON format.
-
-### Client Side
-
-The data received by the app is stored in a SQLite database on the Android phone itself to make it available offline. The data is replaced when refreshed. 
-
-### Order of Execution
-![](/flow.png?raw=true)
-
-1. The Android application requests data from the server through `HTTP GET` to the PHP script. An initial request is made for the list of categories when the *Our Resources* page of the app is loaded. Further requests are made to get the list of documents when a category is selected.
-
-2. The `paJSON.php` file queries the MySQL Database and returns the encoded data in JSON format.
-
-3. The app parses the JSON encoded data and stores it locally in a SQLite Database.
-
-4. The updated content is displayed on the screen. 
-
-5. When not connected to the internet, the app pulls data locally from the SQLite Database instead of sending a request to the server.
-
 
 Created on *Android Studio, v1.3*. Tested on Android *Lollipop* and *KitKat*.
 ##### Last Edit: July 28, 2015
