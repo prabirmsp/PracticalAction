@@ -1,3 +1,5 @@
+<<<<<<< HEAD
+
 # Practical Answers - Document Browser Android 
 Created by **Smart Solutions**, 2015.
 
@@ -86,3 +88,6 @@ Downloaded documents may be viewed by tapping the `Open` button, which will open
 
 Created on *Android Studio, v1.3*. Tested on Android *Lollipop* and *KitKat*.
 ##### Last Edit: July 28, 2015
+=======
+# PracticalAction
+>>>>>>> 387d0fcc194a1a36b201e9bbf1b3b5536efa5328
