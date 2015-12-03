@@ -1,6 +1,6 @@
 
 # Practical Answers - Document Browser Android 
-Created by **Smart Solutions**, 2015.
+Created by __Prabir Pradhan__ for  **Smart Solutions**, 2015.
 
 ## Obtaining Data
 
